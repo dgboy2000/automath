@@ -1,0 +1,4 @@
+automath
+========
+
+Automated mathematics
