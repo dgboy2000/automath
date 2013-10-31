@@ -12,9 +12,16 @@ import java.util.List;
  * Time: 12:49 AM
  * To change this template use File | Settings | File Templates.
  */
+
+// TODO: change this class to enum, change existing uses to Predicate
+// TODO: operator should know the type of its arguments
 public class Operator extends BaseType {
     public enum Type {
-        EQUALS(2, 1, "=");
+
+        // BINARY
+        AND(2, 1, "&"),
+        EQUALS(2, 1, "="),
+        OR(2, 1, "|");
 
         // Number of arguments
         public final int arity;

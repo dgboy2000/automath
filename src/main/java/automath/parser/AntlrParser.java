@@ -1,6 +1,8 @@
 package automath.parser;
 
-import automath.antlr.*;
+import automath.antlr.testgrammar.TestGrammerBaseVisitor;
+import automath.antlr.testgrammar.TestGrammerLexer;
+import automath.antlr.testgrammar.TestGrammerParser;
 import automath.type.BaseType;
 import automath.type.Operator;
 import org.antlr.v4.runtime.ANTLRInputStream;

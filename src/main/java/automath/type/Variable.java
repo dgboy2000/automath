@@ -8,7 +8,8 @@ package automath.type;
  * To change this template use File | Settings | File Templates.
  */
 public class Variable extends BaseType {
-    private boolean isBound;
+    private boolean isBound = false; // Whether variable is bound in it's current context
+    private Class type; // Class of objects over which the variable ranges
 
     public Variable(String name) {
         super(name);

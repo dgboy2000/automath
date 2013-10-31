@@ -1,7 +1,8 @@
 package automath.parser;
 
 // import ANTLR's runtime libraries
-import automath.antlr.*;
+import automath.antlr.testgrammar.TestGrammerLexer;
+import automath.antlr.testgrammar.TestGrammerParser;
 import automath.type.Operator;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;

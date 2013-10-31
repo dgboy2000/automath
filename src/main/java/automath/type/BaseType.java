@@ -10,6 +10,7 @@ package automath.type;
 public class BaseType {
     private final String name;
 
+    public BaseType() { name = "NONAME"; }
     public BaseType(String name) {
         this.name = name;
     }

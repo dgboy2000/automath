@@ -1,14 +1,17 @@
 package automath.type;
 
 /**
- * Created with IntelliJ IDEA.
- * User: dannygoodman
- * Date: 10/30/13
- * Time: 12:52 AM
- * To change this template use File | Settings | File Templates.
+ * Expression with a boolean value (true / false)
  */
-public class Predicate extends BaseType {
-    public Predicate(String name) {
-        super(name);
+public class Predicate extends Expression {
+    public static Predicate EMPTY = new Predicate() {
+        @Override
+        public boolean matches(Predicate dontCare) {
+            return true;
+        }
+    };
+
+    public boolean matches(Predicate otherPredicate) {
+        return false;
     }
 }

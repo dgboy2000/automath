@@ -1,13 +1,10 @@
 // Generated from TestGrammer.g4 by ANTLR 4.1
-package automath.antlr;
+package automath.antlr.testgrammar;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class TestGrammerParser extends Parser {
@@ -124,7 +121,7 @@ public class TestGrammerParser extends Parser {
 	public static class ValueContext extends ParserRuleContext {
 		public TerminalNode INT() { return getToken(TestGrammerParser.INT, 0); }
 		public InitContext init() {
-			return getRuleContext(InitContext.class,0);
+			return getRuleContext(InitContext.class, 0);
 		}
 		public ValueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -150,7 +147,7 @@ public class TestGrammerParser extends Parser {
 		enterRule(_localctx, 2, RULE_value);
 		try {
 			setState(26);
-			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input, 2, _ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
@@ -182,10 +179,10 @@ public class TestGrammerParser extends Parser {
 			return getRuleContexts(TermContext.class);
 		}
 		public OperatorContext operator() {
-			return getRuleContext(OperatorContext.class,0);
+			return getRuleContext(OperatorContext.class, 0);
 		}
 		public TermContext term(int i) {
-			return getRuleContext(TermContext.class,i);
+			return getRuleContext(TermContext.class, i);
 		}
 		public ExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
