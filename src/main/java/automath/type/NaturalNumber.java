@@ -10,8 +10,17 @@ package automath.type;
 public class NaturalNumber extends BaseType {
     private final long value;
 
+    public NaturalNumber(NaturalNumber num) {
+        super(num.getName());
+        this.value = num.value;
+    }
     public NaturalNumber(String name) {
         super(name);
         this.value = Long.valueOf(name);
+    }
+
+    @Override
+    public boolean isAssignableFrom(Type type) {
+        return (type instanceof NaturalNumber) && value == ((NaturalNumber) type).value;
     }
 }

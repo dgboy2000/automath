@@ -23,23 +23,23 @@ import java.io.IOException;
 public class AntlrParser {
 
     private class AntlrVisitor extends TestGrammerBaseVisitor<BaseType> {
-        @Override
-        public Operator visitOperator(@NotNull TestGrammerParser.OperatorContext ctx) {
-            return new Operator(ctx.getText());
-        }
-
-        @Override
-        public Operator visitExpression(@NotNull TestGrammerParser.ExpressionContext ctx) {
-            Operator operator = visitOperator(ctx.operator());
-            operator.setArgument(0, visitTerm(ctx.term(0)));
-            operator.setArgument(1, visitTerm(ctx.term(1)));
-            return operator;
-        }
-
-        @Override
-        public BaseType visitTerm(@NotNull TestGrammerParser.TermContext ctx) {
-            return new BaseType(ctx.getText());
-        }
+//        @Override
+//        public Operator visitOperator(@NotNull TestGrammerParser.OperatorContext ctx) {
+//            return new Operator(ctx.getText());
+//        }
+//
+//        @Override
+//        public Operator visitExpression(@NotNull TestGrammerParser.ExpressionContext ctx) {
+//            Operator operator = visitOperator(ctx.operator());
+//            operator.setArgument(0, visitTerm(ctx.term(0)));
+//            operator.setArgument(1, visitTerm(ctx.term(1)));
+//            return operator;
+//        }
+//
+//        @Override
+//        public BaseType visitTerm(@NotNull TestGrammerParser.TermContext ctx) {
+//            return new BaseType(ctx.getText());
+//        }
     };
 
     public BaseType parse(String functions) throws IOException {

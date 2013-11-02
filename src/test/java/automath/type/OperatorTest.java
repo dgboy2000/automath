@@ -22,14 +22,9 @@ public class OperatorTest {
 
     @Test
     public void simplePrint() {
-        Variable var = new Variable("x");
-        NaturalNumber num = new NaturalNumber("4");
-        List<BaseType> operands = new ArrayList<BaseType>(2);
-        operands.add(var);
-        operands.add(num);
+        Operator eq = Operator.getEnum("=");
 
-        Operator eq = new Operator("=", operands);
-
-        assertThat(eq.toString(), is("x=4"));
+        assertThat(eq, is(Operator.EQUALS));
+        assertThat(eq.toString(), is("="));
     }
 }
