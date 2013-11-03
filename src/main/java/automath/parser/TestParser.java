@@ -20,7 +20,7 @@ import java.io.IOException;
  * Time: 2:27 AM
  * To change this template use File | Settings | File Templates.
  */
-public class AntlrParser {
+public class TestParser {
 
     private class AntlrVisitor extends TestGrammerBaseVisitor<BaseType> {
 //        @Override

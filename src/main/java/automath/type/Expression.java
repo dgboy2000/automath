@@ -1,10 +1,12 @@
 package automath.type;
 
+import automath.util.ExpressionHashProcessor;
 import automath.util.ExpressionVisitor;
 import automath.util.VariableAssignment;
 import automath.util.VariableAssignmentProcessor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,13 +19,16 @@ public class Expression extends BaseType {
     public void setChild(int i, Type type) { children.set(i, type); }
 
     public Expression() {}
+    public Expression(Type... children) {
+        this.getChildren().addAll(Arrays.asList(children));
+    }
 
     public boolean isAssignableFrom(Type otherType) {
         return new ExpressionVisitor(new VariableAssignmentProcessor()).visit(this, otherType);
     }
     public VariableAssignment getVariableAssignmentTo(Type otherType) {
         VariableAssignmentProcessor processor = new VariableAssignmentProcessor();
-        if (!new ExpressionVisitor(processor).visit(this, otherType)) throw new RuntimeException();
+        if (!new ExpressionVisitor(processor).visit(this, otherType)) return null;
         return processor.getVariableAssignment();
     }
 
@@ -58,5 +63,10 @@ public class Expression extends BaseType {
         StringBuilder stringBuilder = new StringBuilder();
         for (Type child : children) stringBuilder.append(child.toString());
         return stringBuilder.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return ExpressionHashProcessor.hash(this);
     }
 }

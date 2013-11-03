@@ -5,6 +5,8 @@ import automath.type.Type;
 import automath.type.Variable;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents a mapping from variables to targets, for example in an expression.
@@ -33,5 +35,24 @@ public class VariableAssignment extends HashMap<Variable, Type> implements Expre
         }
 
         return true;
+    }
+
+    public VariableAssignment intersect(VariableAssignment variableAssignment) {
+        VariableAssignment intersection = (VariableAssignment) this.clone();
+
+        for (Map.Entry<Variable, Type> variableTypeEntry: variableAssignment.entrySet()) {
+            Variable variable = variableTypeEntry.getKey();
+            Type thisTarget = this.get(variable);
+            Type otherTarget = variableTypeEntry.getValue();
+            if (!this.containsKey(variable)) {
+                intersection.put(variable, variableTypeEntry.getValue());
+            } else if (thisTarget.isAssignableFrom(otherTarget)) {
+                intersection.put(variable, otherTarget);
+            } else if (!otherTarget.isAssignableFrom(thisTarget)) {
+                return null; // Variable assignments are not compatible
+            }
+        }
+
+        return intersection;
     }
 }

@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
  * To change this template use File | Settings | File Templates.
  */
 @RunWith(JUnit4.class)
-public class AntlrParserTest {
+public class TestParserTest {
 
     @Test
     public void basicParseTest() throws IOException {

@@ -15,7 +15,18 @@ public class Predicate extends Expression {
 
     public Predicate() {}
 
-    public Predicate(Type... children) {
-        this.getChildren().addAll(Arrays.asList(children));
+    public Predicate(Type... children) { super(children); }
+
+    /*
+     * Does this predicate consist of 2 predicates and the 'AND' operator?
+     */
+    public boolean isCompoundPredicate() {
+        return getChildren().size() == 3 &&
+                (getChild(0) instanceof Predicate) &&
+                (getChild(1) instanceof Operator) &&
+                getChild(1) == Operator.AND &&
+                (getChild(2) instanceof Predicate);
     }
+    public Predicate getLhs() { return (Predicate) getChild(0); }
+    public Predicate getRhs() { return (Predicate) getChild(2); }
 }
