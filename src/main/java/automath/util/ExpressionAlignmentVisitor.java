@@ -2,6 +2,7 @@ package automath.util;
 
 import automath.type.Expression;
 import automath.type.Type;
+import automath.type.Variable;
 
 /**
  * Visit every node (type instance) in an expression in parallel with another expression.
@@ -40,6 +41,7 @@ public class ExpressionAlignmentVisitor {
     }
 
     public boolean visit(Type type, Type otherType) {
+        if (type instanceof Variable) return processor.process(type, otherType);
         return type instanceof Expression ?
                 visitFromExpression((Expression) type, otherType) :
                 processor.process(type, otherType);

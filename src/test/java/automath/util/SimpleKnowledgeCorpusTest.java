@@ -57,4 +57,13 @@ public class SimpleKnowledgeCorpusTest extends BaseTest {
         assertTrue(corpus.addAxiomIfNew(parser.parsePredicate("x=y -> y=x")));
         assertTrue(corpus.get(corpus.size()-1) instanceof Theorem);
     }
+
+    @Test
+    public void duplicateTest() {
+        String test = new StringBuilder("A&B -> A\n")
+                .append("A&B -> B\n")
+                .toString();
+        corpus = parser.parseFile(test);
+        assertEquals(corpus.size(), 2);
+    }
 }

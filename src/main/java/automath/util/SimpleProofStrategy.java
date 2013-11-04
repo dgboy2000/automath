@@ -14,10 +14,12 @@ import java.util.Map;
  */
 public class SimpleProofStrategy implements ProofStrategy {
     private static final int MAX_ROUNDS_OF_INFERENCE = 20;
+    private static final int MAX_NUM_ASSERTIONS = 4;
 
     private final Predicate goal; // The result to prove
     private final KnowledgeCorpus axioms; // The unchanging set of axioms
     private final KnowledgeCorpus currentKnowledge; // The current set of known facts
+    private int numAssertionsLimit = 1;
 
 
     public SimpleProofStrategy(Predicate goal, KnowledgeCorpus axioms) {
@@ -57,10 +59,6 @@ public class SimpleProofStrategy implements ProofStrategy {
             didAnythingChange = didAnythingChange | currentKnowledge.addInferenceIfNew(inference);
         }
 
-        for (Inference assumption : generateCandidateAssumptions()) {
-            didAnythingChange = didAnythingChange | currentKnowledge.addInferenceIfNew(assumption);
-        }
-
         return didAnythingChange;
     }
 
@@ -70,27 +68,46 @@ public class SimpleProofStrategy implements ProofStrategy {
      */
     private List<Inference> generateCandidateAssumptions() {
         List<Inference> candidateAssumptions = new ArrayList<Inference>();
+        List<Predicate> currentAssumptions = new ArrayList<Predicate>();
 
         AntecedentExtractionProcessor processor = new AntecedentExtractionProcessor();
         ExpressionVisitor visitor = new ExpressionVisitor(processor);
-        for (int i=0; i<currentKnowledge.size(); ++i) {
-            Predicate fact = currentKnowledge.get(i);
-            visitor.visit(fact);
-        }
+//        for (int i=0; i<currentKnowledge.size(); ++i) {
+//            Predicate fact = currentKnowledge.get(i);
+//            if (fact.isAssumption()) currentAssumptions.add(fact);
+//            visitor.visit(fact);
+//        }
         visitor.visit(goal);
 
         for (Predicate antecedent : processor.getAntecedents()) {
             candidateAssumptions.add(Inference.assumption(antecedent));
+
+            // Allow assumptions that compound with other assumptions
+            for (Predicate assumptionToBuildOn : currentAssumptions) {
+                candidateAssumptions.add(Inference.assumption(antecedent, assumptionToBuildOn));
+            }
         }
+
 
         return candidateAssumptions;
     }
 
+    private void addAssumptions() {
+        for (Inference assumption : generateCandidateAssumptions()) {
+            currentKnowledge.addInferenceIfNew(assumption);
+        }
+    }
+
     @Override
     public boolean execute() {
-        for (int i=0; i<MAX_ROUNDS_OF_INFERENCE; ++i) {
-            if (currentKnowledge.isKnown(goal)) return true;
-            if (!executeOneRoundOfInference()) return false;
+        for (int j=0; j<numAssertionsLimit; ++j) {
+            System.out.println("Unproven with "+j+" joint assertions; increasing to "+(j+1));
+            addAssumptions();
+            for (int i=0; i<MAX_ROUNDS_OF_INFERENCE; ++i) {
+                if (currentKnowledge.isKnown(goal)) return true;
+                if (!executeOneRoundOfInference()) break;
+                System.out.println("Finished inference round "+(i+1)+", assertions limit "+(j+1));
+            }
         }
         return currentKnowledge.isKnown(goal);
     }

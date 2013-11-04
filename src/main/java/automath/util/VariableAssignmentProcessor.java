@@ -20,8 +20,14 @@ public class VariableAssignmentProcessor implements ExpressionAlignmentVisitor.T
 
     public boolean processVariable(Variable variable, Type otherType) {
         if (variableAssignment.containsKey(variable)) {
-            if (variableAssignment.get(variable).isAssignableFrom(otherType)) variableAssignment.put(variable, otherType);
+            if (variableAssignment.get(variable).isAssignableFrom(otherType) &&
+                    variable.getName().equals(otherType.getName())) {
+                // TODO: fix this check for when two variable assignments are compatible
+                variableAssignment.put(variable, otherType);
+                return true;
+            }
             else if (!otherType.isAssignableFrom(variableAssignment.get(variable))) return false;
+            return false;
         }
 
         // TODO: take into account bound v non-bound too

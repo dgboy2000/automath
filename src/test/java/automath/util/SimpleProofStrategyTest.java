@@ -1,7 +1,6 @@
 package automath.util;
 
 import automath.BaseTest;
-import automath.parser.FirstParser;
 import automath.type.Predicate;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +61,8 @@ public class SimpleProofStrategyTest extends BaseTest {
         String test = new StringBuilder("A|B -> (~A -> B)\n")
                 .append("(A -> B) -> (~A | B)\n")
                 .append("A|B -> B|A\n")
+                .append("A&B -> A\n")
+                .append("A&B -> B\n")
                 .append("(A|B) & ~A -> B\n")
                 .toString();
         Predicate goal = parser.parsePredicate("A & (A -> B) -> B");

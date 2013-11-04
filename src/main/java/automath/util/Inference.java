@@ -37,6 +37,20 @@ public class Inference {
         return inference;
     }
 
+    /**
+     * Return an assumption that incorporates the specified context assumptions and precedent
+     * @param toAssume
+     * @param context
+     * @return
+     */
+    public static Inference assumption(Predicate toAssume, Predicate context) {
+        Inference inference = Inference.assumption(toAssume);
+        inference.result.getAssumptions().addAll(context.getAssumptions());
+        inference.precedents.add(context);
+
+        return inference;
+    }
+
     public static Inference reduction(Predicate toReduce, Predicate assumption) {
         Inference inference = new Inference();
         inference.variableAssignment = new VariableAssignment();

@@ -39,7 +39,7 @@ public class Expression extends BaseType {
         if (!(otherObject instanceof Expression)) return false;
         Expression otherExpression = (Expression) otherObject;
 
-        // TODO: inefficient; implement a second tree walker
+        // TODO: inefficient; implement a tree walker
         return this.isAssignableFrom(otherExpression) && otherExpression.isAssignableFrom(this);
     }
 

@@ -47,15 +47,19 @@ public class Predicate extends Expression {
     public Predicate getRhs() { return (Predicate) getChild(2); }
 
     /**
+     * Assumptions are the only predicates that contain themselves as assumptions
+     * @return
+     */
+    public boolean isAssumption() {
+        return getAssumptions().size() > 0 && getAssumptions().contains(this);
+    }
+
+    /**
      * Generates an predicate that is a reduction of this by the specified assumption
      * @param assumptionToReduce
      * @return
      */
     public Predicate getReductionBy(Predicate assumptionToReduce) {
-        if (assumptionToReduce.getAssumptions().size() != 1 ||
-                !assumptionToReduce.containsAssumption(assumptionToReduce))
-            throw new RuntimeException("Assumption must assume only itself.");
-
         Predicate reduced = new Predicate(
                 assumptionToReduce.clone(),
                 Operator.IMPLIES,
@@ -75,9 +79,6 @@ public class Predicate extends Expression {
      * @return
      */
     public Predicate asAssumption() {
-        if (this.getAssumptions().size() > 0)
-            throw new RuntimeException("Assumptions can't depend on assumptions");
-
         Predicate assumption = (Predicate) this.clone();
         assumption.getAssumptions().addAll(this.getAssumptions());
         assumption.getAssumptions().add(assumption);
@@ -94,11 +95,11 @@ public class Predicate extends Expression {
     @Override
     public int hashCode() {
         int code = ExpressionHashProcessor.hash(this);
-//        for (Predicate assumption : this.assumptions) {
-//            if (assumption == this) continue; // Avoid infinite recursion
-//            int assumptionCode = assumption.hashCode();
-//            code = code*code*code + assumptionCode;
-//        }
+        for (Predicate assumption : this.assumptions) {
+            if (assumption == this) continue; // Avoid infinite recursion
+            int assumptionCode = assumption.hashCode();
+            code += assumptionCode * assumptionCode * assumptionCode;
+        }
         // TODO: include assumptions checks in .equals
 
         return code;
@@ -114,5 +115,30 @@ public class Predicate extends Expression {
                 (type instanceof Variable) &&
                 ((Variable) type).isTypeAssignableFrom(Predicate.EMPTY)
         );
+    }
+
+    /**
+     * Two predicates are equal if the underlying expressions are equal and they
+     * depend on the same assumptions.
+     * @param object
+     * @return
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Predicate) || !super.equals(object)) return false;
+        if (this == object) return true;
+        Predicate predicate = (Predicate) object;
+        return getAssumptionLabelsWithoutSelf().equals(predicate.getAssumptionLabelsWithoutSelf());
+    }
+
+    private Set<String> getAssumptionLabelsWithoutSelf() {
+        Set<String> assumptionLabels = new HashSet<String>();
+        for (Predicate assumption : getAssumptions()) {
+            String label = assumption.getLabel();
+            if (label == null) throw new RuntimeException("Encountered assumption with null label");
+            if (label.equals(this.getLabel())) continue;
+            assumptionLabels.add(label);
+        }
+        return assumptionLabels;
     }
 }

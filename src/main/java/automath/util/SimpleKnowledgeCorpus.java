@@ -25,10 +25,10 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
                 && result.getChild(1) == Operator.IMPLIES)
             result = new Theorem(result);
 
+        result.setLabel(Integer.toString(size()+1));
         if (factToInference.containsKey(result)) return false;
         facts.add(result);
         factToInference.put(result, inference);
-        result.setLabel(Integer.toString(size()));
         return true;
     }
 
