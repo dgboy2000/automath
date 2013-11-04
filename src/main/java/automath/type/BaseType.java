@@ -8,8 +8,9 @@ package automath.type;
  * To change this template use File | Settings | File Templates.
  */
 public class BaseType implements Type, Cloneable {
-    private final String name;
+    private String name;
     public String getName() { return name; }
+    protected void setName(String name) { this.name = name; }
 
     public BaseType() { name = "NONAME"; }
     public BaseType(String name) {

@@ -19,6 +19,7 @@ public class SimpleProofStrategy implements ProofStrategy {
     private final KnowledgeCorpus axioms; // The unchanging set of axioms
     private final KnowledgeCorpus currentKnowledge; // The current set of known facts
 
+
     public SimpleProofStrategy(Predicate goal, KnowledgeCorpus axioms) {
         this.goal = goal;
         this.axioms = axioms.clone();
@@ -39,6 +40,8 @@ public class SimpleProofStrategy implements ProofStrategy {
      */
     private boolean executeOneRoundOfInference() {
         List<Theorem> rulesOfInference = getKnownTheorems();
+        rulesOfInference.add(Theorem.REDUCTION);
+
         Map<Predicate, Inference> resultToInference = new HashMap<Predicate, Inference>();
         for (Theorem rule : rulesOfInference) {
             for (Inference inference : currentKnowledge.getLegalInferences(rule)) {
@@ -54,7 +57,33 @@ public class SimpleProofStrategy implements ProofStrategy {
             didAnythingChange = didAnythingChange | currentKnowledge.addInferenceIfNew(inference);
         }
 
+        for (Inference assumption : generateCandidateAssumptions()) {
+            didAnythingChange = didAnythingChange | currentKnowledge.addInferenceIfNew(assumption);
+        }
+
         return didAnythingChange;
+    }
+
+    /**
+     * Generate candidate assumptions that might help the proof
+     * @return
+     */
+    private List<Inference> generateCandidateAssumptions() {
+        List<Inference> candidateAssumptions = new ArrayList<Inference>();
+
+        AntecedentExtractionProcessor processor = new AntecedentExtractionProcessor();
+        ExpressionVisitor visitor = new ExpressionVisitor(processor);
+        for (int i=0; i<currentKnowledge.size(); ++i) {
+            Predicate fact = currentKnowledge.get(i);
+            visitor.visit(fact);
+        }
+        visitor.visit(goal);
+
+        for (Predicate antecedent : processor.getAntecedents()) {
+            candidateAssumptions.add(Inference.assumption(antecedent));
+        }
+
+        return candidateAssumptions;
     }
 
     @Override
@@ -69,5 +98,10 @@ public class SimpleProofStrategy implements ProofStrategy {
     @Override
     public Proof generateProof() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public KnowledgeCorpus getCurrentKnowledge() {
+        return currentKnowledge;
     }
 }

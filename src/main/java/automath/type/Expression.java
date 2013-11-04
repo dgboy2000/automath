@@ -1,7 +1,7 @@
 package automath.type;
 
+import automath.util.ExpressionAlignmentVisitor;
 import automath.util.ExpressionHashProcessor;
-import automath.util.ExpressionVisitor;
 import automath.util.VariableAssignment;
 import automath.util.VariableAssignmentProcessor;
 
@@ -24,11 +24,11 @@ public class Expression extends BaseType {
     }
 
     public boolean isAssignableFrom(Type otherType) {
-        return new ExpressionVisitor(new VariableAssignmentProcessor()).visit(this, otherType);
+        return new ExpressionAlignmentVisitor(new VariableAssignmentProcessor()).visit(this, otherType);
     }
     public VariableAssignment getVariableAssignmentTo(Type otherType) {
         VariableAssignmentProcessor processor = new VariableAssignmentProcessor();
-        if (!new ExpressionVisitor(processor).visit(this, otherType)) return null;
+        if (!new ExpressionAlignmentVisitor(processor).visit(this, otherType)) return null;
         return processor.getVariableAssignment();
     }
 

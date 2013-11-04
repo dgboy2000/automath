@@ -2,7 +2,7 @@ grammar FirstGrammar;
 
 // An entire input file
 file : statement | statement file;
-statement : predicate;
+statement : predicate NEWLINE;
 
 /*
 Logical operations after arithmetic operations
@@ -34,16 +34,17 @@ dExp : dExp '/' dExp | eExp;
 eExp : eExp '^'<assoc=right> eExp | pExp;
 pExp : '(' aExp ')' | term;
 
-term : variable | number;
-variable : VARIABLE;
+term : numberVariable | number;
+numberVariable : NUM_VAR;
 number : INT;
 
 
 // parser rules start with lowercase letters, lexer rules with uppercase
-VARIABLE : [a-z][a-zA-Z_0-9]*;
+NUM_VAR : [a-z][a-zA-Z_0-9]*;
 PRED_VAR : [A-Z][a-zA-Z_0-9]*;
 
-PRED_OP : [=<>] | '<=' | '>=';
+PRED_OP : [=<>] | '<=' | '>=' | '~=';
 
 INT : [0-9]+ ; // Define token INT as one or more digits
 WHITESPACE : [ \t]+ -> skip ; // Define whitespace rule, toss it out
+NEWLINE : [\n\r]* ([\n\r] | EOF) ;

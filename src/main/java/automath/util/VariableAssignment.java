@@ -6,17 +6,29 @@ import automath.type.Variable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Represents a mapping from variables to targets, for example in an expression.
  */
-public class VariableAssignment extends HashMap<Variable, Type> implements ExpressionVisitor.TypeProcessor {
+public class VariableAssignment extends HashMap<Variable, Type> implements ExpressionAlignmentVisitor.TypeProcessor {
     public <T extends Expression> T applyTo(T expression) {
         T result = (T) expression.clone();
 
-        new ExpressionVisitor(this).visit(expression, result);
+        new ExpressionAlignmentVisitor(this).visit(expression, result);
         return result;
+    }
+
+    public Type applyTo(Variable variable) {
+        Variable result = (Variable) variable.clone();
+
+        new ExpressionAlignmentVisitor(this).visit(variable, result);
+        return result;
+    }
+
+    public Type applyTo(Type type) {
+        if (type instanceof Expression) return (Expression) applyTo((Expression) type);
+        if (type instanceof Variable) return applyTo((Variable) type);
+        throw new IllegalArgumentException("Can only apply variable assignments to Types or Expressions");
     }
 
     public boolean process(Type sourceType, Type destType) {

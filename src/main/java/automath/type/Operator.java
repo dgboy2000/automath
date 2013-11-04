@@ -38,6 +38,9 @@ public enum Operator implements Type {
 
     // PREDICATE
     EQUALS(2, BaseType.class, "="),
+    NEQ(2, BaseType.class, "~="),
+    LEQ(2, BaseType.class, "<="),
+    GEQ(2, BaseType.class, ">="),
 
     // ARITHMETIC
     EXP(2, BaseType.class, "^"),
@@ -75,6 +78,7 @@ public enum Operator implements Type {
 
     public boolean isAssignableFrom(Type type) { return type instanceof Operator && this == type; }
     public String toString() { return name; }
+    public String getName() { return name; }
     public boolean isBooleanOperator() { return this == IMPLIES || this == AND || this == OR; }
 
     // TODO: change this logic to allow short-circuiting

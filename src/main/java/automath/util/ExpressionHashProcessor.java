@@ -10,7 +10,7 @@ import automath.type.Variable;
  *
  * TODO: take into account variables that appear in multiple places with the same name
  */
-public class ExpressionHashProcessor implements ExpressionVisitor.TypeProcessor {
+public class ExpressionHashProcessor implements ExpressionVisitor.Processor {
     private int hashCode = 0;
     private void next(int hashCode) { this.hashCode = this.hashCode * this.hashCode * this.hashCode + hashCode; }
     private void next(boolean bool) { if (bool) next(100); else next(200); }
@@ -18,30 +18,28 @@ public class ExpressionHashProcessor implements ExpressionVisitor.TypeProcessor 
     @Override
     public int hashCode() { return hashCode; }
 
-    public boolean process(Type type, Type otherType) {
-        if (type instanceof Expression) return processExpression((Expression) type, otherType);
-        if (type instanceof Variable) return processVariable((Variable) type, otherType);
+    public boolean process(Type type) {
+        if (type instanceof Expression) return processExpression((Expression) type);
+        if (type instanceof Variable) return processVariable((Variable) type);
 
         next(type.hashCode());
         return true;
     }
 
-    public boolean processVariable(Variable variable, Type otherType) {
+    public boolean processVariable(Variable variable) {
         next(variable.getType().hashCode());
         next(variable.isBound());
         return true;
     }
 
-    public boolean processExpression(Expression expression, Type otherType) {
+    public boolean processExpression(Expression expression) {
         next(expression.getChildren().size());
         return true;
     }
 
     public static int hash(Expression expression) {
         ExpressionHashProcessor hashProcessor = new ExpressionHashProcessor();
-
-        // TODO: write a visitor that goes to a single tree without needing to visit 2 copies in parallel
-        new ExpressionVisitor(hashProcessor).visit(expression, expression);
+        new ExpressionVisitor(hashProcessor).visit(expression);
         return hashProcessor.hashCode();
     }
 }

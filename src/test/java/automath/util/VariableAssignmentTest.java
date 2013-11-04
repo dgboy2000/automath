@@ -27,8 +27,8 @@ public class VariableAssignmentTest extends BaseTest {
         variableAssignment.put(bVar, num);
 
         assertTrue(variableAssignment.containsKey(aVar));
-        assertTrue(variableAssignment.containsKey(new Variable("a")));
-        assertTrue(variableAssignment.containsKey(new Variable("b")));
+        assertTrue(variableAssignment.containsKey(parser.parseVariable("a")));
+        assertTrue(variableAssignment.containsKey(parser.parseVariable("b")));
         assertFalse(variableAssignment.containsKey(xVar));
 
         Predicate equation = new Predicate(aVar, Operator.EQUALS, bVar);
@@ -62,5 +62,26 @@ public class VariableAssignmentTest extends BaseTest {
         assertEquals(2, firstAssignment.intersect(overloadingAssignment).size());
 
         // TODO: Functionality for post-merge variable rewrite to avoid binding distinct variables
+    }
+
+    @Test
+    public void testBinding() {
+        Predicate binding = parser.parsePredicate("x=4");
+        Variable xVar = (Variable) binding.getChild(0);
+        xVar.bindTo(binding);
+        NaturalNumber num = (NaturalNumber) binding.getChild(2);
+
+        Theorem theorem = new Theorem(parser.parsePredicate("a=b -> b=a"));
+        Variable aVar = (Variable) theorem.getAntecedent().getChild(0);
+        Variable bVar = (Variable) theorem.getAntecedent().getChild(2);
+
+        VariableAssignment variableAssignment = theorem.getAntecedent().getVariableAssignmentTo(binding);
+        assertEquals(((Variable) variableAssignment.get(aVar)).getBinding(), binding);
+
+        Predicate result = theorem.apply(variableAssignment);
+        Predicate expectedResult = new Predicate(num, Operator.EQUALS, xVar);
+
+        assertEquals(result, expectedResult);
+        assertEquals(((Variable) result.getChild(2)).getBinding(), binding);
     }
 }

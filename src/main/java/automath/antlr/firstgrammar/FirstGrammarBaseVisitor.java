@@ -162,7 +162,7 @@ public class FirstGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitVariable(@NotNull FirstGrammarParser.VariableContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNumberVariable(@NotNull FirstGrammarParser.NumberVariableContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}

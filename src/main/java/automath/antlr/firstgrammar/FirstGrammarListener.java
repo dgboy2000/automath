@@ -207,15 +207,15 @@ public interface FirstGrammarListener extends ParseTreeListener {
 	void exitPPred(@NotNull FirstGrammarParser.PPredContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link FirstGrammarParser#variable}.
+	 * Enter a parse tree produced by {@link FirstGrammarParser#numberVariable}.
 	 * @param ctx the parse tree
 	 */
-	void enterVariable(@NotNull FirstGrammarParser.VariableContext ctx);
+	void enterNumberVariable(@NotNull FirstGrammarParser.NumberVariableContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FirstGrammarParser#variable}.
+	 * Exit a parse tree produced by {@link FirstGrammarParser#numberVariable}.
 	 * @param ctx the parse tree
 	 */
-	void exitVariable(@NotNull FirstGrammarParser.VariableContext ctx);
+	void exitNumberVariable(@NotNull FirstGrammarParser.NumberVariableContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link FirstGrammarParser#eExp}.

@@ -2,12 +2,17 @@ package automath.parser;
 
 import automath.antlr.firstgrammar.*;
 import automath.type.*;
+import automath.util.KnowledgeCorpus;
+import automath.util.SimpleKnowledgeCorpus;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import javax.xml.stream.events.Characters;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Parses FirstGrammar into automath types
@@ -24,6 +29,16 @@ public class FirstParser {
     pPred : '(' impPred ')' | equationPredicate | predicateVariable;
      */
     private class FirstVisitor extends FirstGrammarBaseVisitor<Type> {
+        private final List<Predicate> parsedPredicates = new ArrayList<Predicate>();
+        public List<Predicate> getParsedPredicates() { return parsedPredicates; }
+
+        @Override
+        public BaseType visitFile(@NotNull FirstGrammarParser.FileContext ctx) {
+            if (ctx.statement() != null) parsedPredicates.add((Predicate) visitStatement(ctx.statement()));
+            if (ctx.file() != null) visitFile(ctx.file());
+            return null;
+        }
+
         @Override
         public BaseType visitStatement(@NotNull FirstGrammarParser.StatementContext ctx) {
             return visitPredicate(ctx.predicate());
@@ -90,8 +105,8 @@ public class FirstParser {
         }
 
         @Override
-        public Variable visitPredicateVariable(@NotNull FirstGrammarParser.PredicateVariableContext ctx) {
-            return new Variable(ctx.getText());
+        public PredicateVariable visitPredicateVariable(@NotNull FirstGrammarParser.PredicateVariableContext ctx) {
+            return new PredicateVariable(ctx.getText());
         }
 
         @Override
@@ -157,13 +172,13 @@ public class FirstParser {
 
         @Override
         public BaseType visitTerm(@NotNull FirstGrammarParser.TermContext ctx) {
-            if (ctx.variable() != null) return visitVariable(ctx.variable());
+            if (ctx.numberVariable() != null) return visitNumberVariable(ctx.numberVariable());
             return visitNumber(ctx.number());
         }
 
         @Override
-        public Variable visitVariable(@NotNull FirstGrammarParser.VariableContext ctx) {
-            return new Variable(ctx.getText());
+        public NumberVariable visitNumberVariable(@NotNull FirstGrammarParser.NumberVariableContext ctx) {
+            return new NumberVariable(ctx.getText());
         }
 
         @Override
@@ -186,6 +201,16 @@ public class FirstParser {
         return new FirstGrammarParser(tokens);
     }
 
+    public KnowledgeCorpus parseFile(String fileContents) {
+        KnowledgeCorpus corpus = new SimpleKnowledgeCorpus();
+        FirstVisitor visitor = new FirstVisitor();
+        visitor.visit(getParser(fileContents).file());
+        for (Predicate predicate : visitor.getParsedPredicates()) {
+            corpus.addAxiomIfNew(predicate);
+        }
+        return corpus;
+    }
+
     public Predicate parsePredicate(String predicate) {
         return (Predicate) new FirstVisitor().visit(getParser(predicate).predicate());
     }
@@ -194,7 +219,7 @@ public class FirstParser {
         return (Expression) new FirstVisitor().visit(getParser(expression).expression());
     }
 
-    public Variable parseVariable(String variable) {
-        return (Variable) new FirstVisitor().visit(getParser(variable).variable());
+    public Variable parseVariable(String name) {
+        return Character.isUpperCase(name.charAt(0)) ? new PredicateVariable(name) : new NumberVariable(name);
     }
 }

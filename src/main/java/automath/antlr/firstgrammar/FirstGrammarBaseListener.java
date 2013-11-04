@@ -251,13 +251,13 @@ public class FirstGrammarBaseListener implements FirstGrammarListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterVariable(@NotNull FirstGrammarParser.VariableContext ctx) { }
+	@Override public void enterNumberVariable(@NotNull FirstGrammarParser.NumberVariableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitVariable(@NotNull FirstGrammarParser.VariableContext ctx) { }
+	@Override public void exitNumberVariable(@NotNull FirstGrammarParser.NumberVariableContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -4,44 +4,33 @@ import automath.type.Expression;
 import automath.type.Type;
 
 /**
- * Visit every node (type instance) in an expression in parallel with another expression.
- * Supports joint processing
+ * Visit and process every node in an expression.
  */
 public class ExpressionVisitor {
-    public interface TypeProcessor {
-        /*
+    public interface Processor {
+        /**
          * Processes the visited nodes and returns true to continue, false to terminate early
          */
-        public boolean process(Type typeA, Type typeB);
+        public boolean process(Type type);
     }
 
-    protected final TypeProcessor processor;
+    protected final Processor processor;
 
-    public ExpressionVisitor(TypeProcessor processor) {
+    public ExpressionVisitor(Processor processor) {
         this.processor = processor;
     }
 
-    /*
-     * Returns true if a variable assignement can turn this.expression into otherExpression.
-     * Computes the VariableAssignment along the way.
-     */
-    public boolean visitFromExpression(Expression expression, Type otherType) {
-        if (!expression.getClass().isAssignableFrom(otherType.getClass())) return false;
-        Expression otherExpression = (Expression) otherType;
-
-        int numChildren = expression.getChildren().size();
-        if (numChildren != otherExpression.getChildren().size()) return false;
-
-        for (int childInd=0; childInd < numChildren; ++childInd) {
-            if (!visit(expression.getChild(childInd), otherExpression.getChild(childInd))) return false;
+    public boolean visitExpression(Expression expression) {
+        for (Type child : expression.getChildren()) {
+            if (!visit(child)) return false;
         }
 
-        return processor.process(expression, otherExpression);
+        return processor.process(expression);
     }
 
-    public boolean visit(Type type, Type otherType) {
+    public boolean visit(Type type) {
         return type instanceof Expression ?
-                visitFromExpression((Expression) type, otherType) :
-                processor.process(type, otherType);
+                visitExpression((Expression) type) :
+                processor.process(type);
     }
 }

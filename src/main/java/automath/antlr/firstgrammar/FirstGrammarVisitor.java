@@ -138,11 +138,11 @@ public interface FirstGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	T visitPPred(@NotNull FirstGrammarParser.PPredContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link FirstGrammarParser#variable}.
+	 * Visit a parse tree produced by {@link FirstGrammarParser#numberVariable}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVariable(@NotNull FirstGrammarParser.VariableContext ctx);
+	T visitNumberVariable(@NotNull FirstGrammarParser.NumberVariableContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link FirstGrammarParser#eExp}.

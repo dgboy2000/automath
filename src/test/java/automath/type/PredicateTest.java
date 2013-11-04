@@ -1,5 +1,6 @@
 package automath.type;
 
+import automath.BaseTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +15,7 @@ import static org.junit.Assert.assertTrue;
  * Tests the Predicate
  */
 @RunWith(JUnit4.class)
-public class PredicateTest {
+public class PredicateTest extends BaseTest {
     Predicate equation;
     Predicate equationCopy;
     Predicate flippedEquation;
@@ -22,7 +23,7 @@ public class PredicateTest {
 
     @Before
     public void init() {
-        Variable var = new Variable("x");
+        Variable var = parser.parseVariable("x");
         NaturalNumber num = new NaturalNumber("4");
 
         equation = new Predicate(var, Operator.EQUALS, num);

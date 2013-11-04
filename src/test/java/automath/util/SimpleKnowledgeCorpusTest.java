@@ -1,7 +1,6 @@
 package automath.util;
 
 import automath.BaseTest;
-import automath.parser.FirstParser;
 import automath.type.Predicate;
 import automath.type.Theorem;
 import org.junit.Before;

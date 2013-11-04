@@ -9,6 +9,16 @@ public class Theorem extends Predicate {
     private final Predicate antecedent; public Predicate getAntecedent() { return antecedent; }
     private final Predicate consequent; public Predicate getConsequent() { return consequent; }
 
+    // Represent the process of assuming something. Will be the inference reason for all assumptions
+    public static Theorem ASSUMPTION = new Theorem(Predicate.EMPTY, Predicate.EMPTY) {
+        @Override public String getName() { return "ASSUMPTION"; }
+    };
+
+    // Assumption ==> Derived result
+    public static Theorem REDUCTION = new Theorem(Predicate.EMPTY, Predicate.EMPTY) {
+        @Override public String getName() { return "REDUCTION"; }
+    };
+
     public Theorem(Predicate antecedent, Predicate consequent) {
         super(antecedent, Operator.IMPLIES, consequent);
         this.antecedent = antecedent;
@@ -25,6 +35,8 @@ public class Theorem extends Predicate {
         }
         else throw new IllegalArgumentException("Argument not a theorem");
     }
+
+    public void setTheoremName(String name) { setName(name); }
 
     public boolean isApplicable(Predicate predicate) {
         return antecedent.isAssignableFrom(predicate);

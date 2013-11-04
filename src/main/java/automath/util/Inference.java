@@ -2,6 +2,7 @@ package automath.util;
 
 import automath.type.Predicate;
 import automath.type.Theorem;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,4 +26,49 @@ public class Inference {
 
         return inference;
     }
+
+    public static Inference assumption(Predicate assumption) {
+        Inference inference = new Inference();
+        inference.variableAssignment = new VariableAssignment();
+        inference.result = assumption;
+        inference.theorem = Theorem.ASSUMPTION;
+
+        return inference;
+    }
+
+    public static Inference reduction(Predicate toReduce, Predicate assumption) {
+        Inference inference = new Inference();
+        inference.variableAssignment = new VariableAssignment();
+        inference.result = toReduce.getReductionBy(assumption);
+        inference.theorem = Theorem.REDUCTION;
+
+        return inference;
+    }
+
+    public String toString() {
+        StringBuilder inferenceStringBuilder = new StringBuilder(result.toString())
+                .append("\t\t").append(theorem.getName());
+
+        if (precedents.size() > 0) {
+            inferenceStringBuilder.append("(");
+            List<String> precendentLabels = new ArrayList<String>();
+            for (Predicate precedent : precedents) {
+                precendentLabels.add(precedent.getLabel());
+            }
+            inferenceStringBuilder.append(StringUtils.join(precendentLabels, ","));
+            inferenceStringBuilder.append(")");
+        }
+
+        return inferenceStringBuilder.toString();
+    }
+
+    /**
+     * Hash inference by its result and assumptions.
+     * @return
+     */
+//    public int hashCode() {
+//
+//    }
+//
+//    public boolean equals()
 }

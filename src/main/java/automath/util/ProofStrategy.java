@@ -6,4 +6,5 @@ package automath.util;
 public interface ProofStrategy {
     public boolean execute(); // Try to find a proof, return whether successful
     public Proof generateProof(); // Return the developed proof
+    public KnowledgeCorpus getCurrentKnowledge(); // Return the current state of knowledge
 }

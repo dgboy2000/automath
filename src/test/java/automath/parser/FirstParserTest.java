@@ -63,4 +63,17 @@ public class FirstParserTest extends BaseTest {
         Predicate theoremPred = new Theorem(parser.parsePredicate(theoremStr));
         assertTrue(theoremPred instanceof Theorem);
     }
+
+    @Test
+    public void fileTest() {
+        String th1 = "a=b -> b=a";
+        String th2 = "x=y & y=z -> x=z";
+        String knowledgeFile = new StringBuilder(th1+"\n")
+                .append(th2+"\n")
+                .toString();
+        corpus = parser.parseFile(knowledgeFile);
+        assertEquals(corpus.size(), 2);
+        assertTrue(corpus.isKnown(new Theorem(parser.parsePredicate(th1))));
+        assertTrue(corpus.isKnown(new Theorem(parser.parsePredicate(th2))));
+    }
 }

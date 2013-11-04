@@ -1,7 +1,6 @@
 package automath.type;
 
 import automath.BaseTest;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -15,20 +14,20 @@ import static org.junit.Assert.*;
 public class TheoremTest extends BaseTest {
     @Test
     public void simpleApplicationTest() {
-        Variable var = new Variable("x");
+        Variable var = parser.parseVariable("x");
         NaturalNumber num = new NaturalNumber("4");
         Predicate equation = new Predicate(var, Operator.EQUALS, num);
         Predicate flippedEquation = new Predicate(num, Operator.EQUALS, var);
 
-        Variable aVar = new Variable("a");
-        Variable bVar = new Variable("b");
+        Variable aVar = parser.parseVariable("a");
+        Variable bVar = parser.parseVariable("b");
         Predicate antecedent = new Predicate(aVar, Operator.EQUALS, bVar);
         Predicate consequent = new Predicate(bVar, Operator.EQUALS, aVar);
 
         Theorem theorem = new Theorem(antecedent, consequent);
         assertTrue(theorem.isApplicable(equation));
 
-        Predicate result = theorem.apply(equation);
+        Type result = theorem.apply(equation);
         assertTrue(flippedEquation.equals(result));
     }
 
