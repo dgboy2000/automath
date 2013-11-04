@@ -46,6 +46,7 @@ public class SimpleProofStrategyTest extends BaseTest {
     public void testLogicalInference() {
         String test = new StringBuilder("A|B -> (~A -> B)\n")
                 .append("A|B -> B|A\n")
+                .append("(A|B) & ~A -> B\n")
                 .toString();
         Predicate goal = parser.parsePredicate("(A->B) & (B->C) -> (A->C)");
         ProofStrategy proofStrategy = new SimpleProofStrategy(goal, parser.parseFile(test));

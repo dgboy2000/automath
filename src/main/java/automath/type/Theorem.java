@@ -9,6 +9,11 @@ public class Theorem extends Predicate {
     private final Predicate antecedent; public Predicate getAntecedent() { return antecedent; }
     private final Predicate consequent; public Predicate getConsequent() { return consequent; }
 
+    // Denote an axiom. Will be the inference reason for all axioms
+    public static Theorem AXIOM = new Theorem(Predicate.EMPTY, Predicate.EMPTY) {
+        @Override public String getName() { return "AXIOM"; }
+    };
+
     // Represent the process of assuming something. Will be the inference reason for all assumptions
     public static Theorem ASSUMPTION = new Theorem(Predicate.EMPTY, Predicate.EMPTY) {
         @Override public String getName() { return "ASSUMPTION"; }

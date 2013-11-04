@@ -22,15 +22,15 @@ public class Inference {
         Inference inference = new Inference();
         inference.variableAssignment = new VariableAssignment();
         inference.result = result;
-        inference.theorem = new Theorem(Predicate.EMPTY, inference.result);
+        inference.theorem = Theorem.AXIOM;
 
         return inference;
     }
 
-    public static Inference assumption(Predicate assumption) {
+    public static Inference assumption(Predicate toAssume) {
         Inference inference = new Inference();
         inference.variableAssignment = new VariableAssignment();
-        inference.result = assumption;
+        inference.result = toAssume.asAssumption();
         inference.theorem = Theorem.ASSUMPTION;
 
         return inference;
@@ -41,13 +41,16 @@ public class Inference {
         inference.variableAssignment = new VariableAssignment();
         inference.result = toReduce.getReductionBy(assumption);
         inference.theorem = Theorem.REDUCTION;
+        inference.precedents.add(assumption);
+        inference.precedents.add(toReduce);
 
         return inference;
     }
 
     public String toString() {
-        StringBuilder inferenceStringBuilder = new StringBuilder(result.toString())
-                .append("\t\t").append(theorem.getName());
+        StringBuilder inferenceStringBuilder = new StringBuilder(result.toString());
+        inferenceStringBuilder.append(StringUtils.repeat(" ", 40-inferenceStringBuilder.length()))
+                .append(theorem.getName() == null ? "Theorem "+theorem.getLabel() : theorem.getName());
 
         if (precedents.size() > 0) {
             inferenceStringBuilder.append("(");

@@ -13,6 +13,8 @@ import java.util.List;
  * One or more symbols of any kind that combine to produce a value
  */
 public class Expression extends BaseType {
+    private final static boolean PRINT_PARENTHESES = true;
+
     private final List<Type> children = new ArrayList<Type>();
     public List<Type> getChildren() { return children; }
     public Type getChild(int i) { return children.get(i); }
@@ -61,7 +63,9 @@ public class Expression extends BaseType {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        if (PRINT_PARENTHESES) stringBuilder.append(" (");
         for (Type child : children) stringBuilder.append(child.toString());
+        if (PRINT_PARENTHESES) stringBuilder.append(") ");
         return stringBuilder.toString();
     }
 
