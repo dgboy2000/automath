@@ -13,7 +13,7 @@ import java.util.List;
  * One or more symbols of any kind that combine to produce a value
  */
 public class Expression extends BaseType {
-    private final static boolean PRINT_PARENTHESES = true;
+    private final static boolean PRINT_PARENTHESES = false;
 
     private final List<Type> children = new ArrayList<Type>();
     public List<Type> getChildren() { return children; }

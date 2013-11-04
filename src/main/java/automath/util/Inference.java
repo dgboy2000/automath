@@ -2,6 +2,7 @@ package automath.util;
 
 import automath.type.Predicate;
 import automath.type.Theorem;
+import org.antlr.v4.runtime.misc.OrderedHashSet;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -50,13 +51,16 @@ public class Inference {
     public String toString() {
         StringBuilder inferenceStringBuilder = new StringBuilder(result.toString());
         inferenceStringBuilder.append(StringUtils.repeat(" ", 40-inferenceStringBuilder.length()))
-                .append(theorem.getName() == null ? "Theorem "+theorem.getLabel() : theorem.getName());
+                .append(theorem.getName() == null ? "Theorem " + theorem.getLabel() : theorem.getName());
 
         if (precedents.size() > 0) {
             inferenceStringBuilder.append("(");
-            List<String> precendentLabels = new ArrayList<String>();
+            Set<String> precendentLabels = new OrderedHashSet<String>();
             for (Predicate precedent : precedents) {
                 precendentLabels.add(precedent.getLabel());
+            }
+            for (Predicate assumption : result.getAssumptions()) {
+                precendentLabels.add(assumption.getLabel());
             }
             inferenceStringBuilder.append(StringUtils.join(precendentLabels, ","));
             inferenceStringBuilder.append(")");

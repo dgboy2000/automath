@@ -12,7 +12,7 @@ public class BaseType implements Type, Cloneable {
     public String getName() { return name; }
     protected void setName(String name) { this.name = name; }
 
-    public BaseType() { name = "NONAME"; }
+    public BaseType() { }
     public BaseType(String name) {
         this.name = name;
     }

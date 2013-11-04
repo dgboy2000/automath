@@ -45,10 +45,26 @@ public class SimpleProofStrategyTest extends BaseTest {
     @Test
     public void testLogicalInference() {
         String test = new StringBuilder("A|B -> (~A -> B)\n")
+                .append("(A -> B) -> (~A | B)\n")
                 .append("A|B -> B|A\n")
                 .append("(A|B) & ~A -> B\n")
                 .toString();
         Predicate goal = parser.parsePredicate("(A->B) & (B->C) -> (A->C)");
+        ProofStrategy proofStrategy = new SimpleProofStrategy(goal, parser.parseFile(test));
+
+        boolean isSuccessful = proofStrategy.execute();
+        System.out.println(proofStrategy.getCurrentKnowledge().toString());
+        assertTrue(isSuccessful);
+    }
+
+    @Test
+    public void testLogicalInference2() {
+        String test = new StringBuilder("A|B -> (~A -> B)\n")
+                .append("(A -> B) -> (~A | B)\n")
+                .append("A|B -> B|A\n")
+                .append("(A|B) & ~A -> B\n")
+                .toString();
+        Predicate goal = parser.parsePredicate("A & (A -> B) -> B");
         ProofStrategy proofStrategy = new SimpleProofStrategy(goal, parser.parseFile(test));
 
         boolean isSuccessful = proofStrategy.execute();
