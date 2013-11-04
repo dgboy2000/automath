@@ -30,7 +30,11 @@ public class VariableAssignmentProcessor implements ExpressionAlignmentVisitor.T
             return false;
         }
 
-        // TODO: take into account bound v non-bound too
+        // TODO: fix this check for if a bound variable is being aligned with what it's assigned to
+        if (variable.isBound()) {
+            return (otherType instanceof Variable) &&
+                    ((Variable) otherType).getBinding() == variable.getBinding();
+        }
         if (!variable.isTypeAssignableFrom(otherType)) return false;
 
         variableAssignment.put(variable, otherType);

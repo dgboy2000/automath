@@ -34,7 +34,12 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
 
     @Override
     public boolean isKnown(Predicate predicate) {
-        for (Predicate fact : facts) if (fact.isAssignableFrom(predicate)) return true;
+        for (Predicate fact : facts) {
+            if (fact.isAssignableFrom(predicate)) {
+                fact.isAssignableFrom(predicate);
+                return true;
+            }
+        }
         return false;
     }
 
