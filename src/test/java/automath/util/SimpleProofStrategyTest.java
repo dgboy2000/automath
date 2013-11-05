@@ -76,22 +76,4 @@ public class SimpleProofStrategyTest extends BaseTest {
         assertTrue(isSuccessful);
         System.out.println(proofStrategy.generateProof(goal).toString());
     }
-
-    @Test
-    @Ignore
-    public void testLogicalInference3() {
-        String test = new StringBuilder("A|~A\n")
-                .append("~A | B -> (A->B)\n")
-                .append("A|B -> B|A\n")
-                .append("A&B -> A\n")
-                .append("A&B -> B\n")
-                .toString();
-        Predicate goal = parser.parsePredicate("A&B -> B&A");
-        ProofStrategy proofStrategy = new SimpleProofStrategy(goal, parser.parseFile(test));
-
-        boolean isSuccessful = proofStrategy.execute();
-        System.out.println(proofStrategy.getCurrentKnowledge().toString());
-        assertTrue(isSuccessful);
-        System.out.println(proofStrategy.generateProof(goal).toString());
-    }
 }

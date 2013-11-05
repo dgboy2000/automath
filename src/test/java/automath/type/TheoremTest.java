@@ -1,10 +1,16 @@
 package automath.type;
 
 import automath.BaseTest;
+import automath.util.Inference;
+import automath.util.SimpleKnowledgeCorpus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.List;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
 
 /**
@@ -27,7 +33,7 @@ public class TheoremTest extends BaseTest {
         Theorem theorem = new Theorem(antecedent, consequent);
         assertTrue(theorem.isApplicable(equation));
 
-        Type result = theorem.apply(equation);
+        Type result = theorem.applyTo(equation);
         assertTrue(flippedEquation.equals(result));
     }
 
@@ -42,5 +48,15 @@ public class TheoremTest extends BaseTest {
         try { new Theorem(parser.parsePredicate("x=x & y=y")); }
         catch (Exception e) { isException = true; }
         assertTrue(isException);
+    }
+
+    @Test
+    public void testVariableAssignmentIsAppliedToPrecedent() {
+        Theorem theorem = parser.parseTheorem("A&B -> A");
+        corpus = new SimpleKnowledgeCorpus();
+        corpus.addAxiomIfNew(parser.parsePredicate("A|~A"));
+        List<Inference> legalInferences = corpus.getLegalInferences(theorem);
+        assertEquals(legalInferences.size(), 1);
+        assertThat(legalInferences.get(0).result, not(equalTo(parser.parsePredicate("A"))));
     }
 }

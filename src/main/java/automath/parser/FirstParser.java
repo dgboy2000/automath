@@ -20,14 +20,14 @@ import java.util.List;
 public class FirstParser {
 
     /*
-    predicate : impPred;
+        predicate : impPred;
 
-    impPred : impPred '->' impPred | orPred;
-    orPred : orPred '|' orPred | andPred;
-    andPred : andPred '&' andPred | notPred;
-    notPred : '~' notPred | pPred;
-    pPred : '(' impPred ')' | equationPredicate | predicateVariable;
-     */
+        impPred : impPred '->' impPred | orPred;
+        orPred : orPred '|' orPred | andPred;
+        andPred : andPred '&' andPred | notPred;
+        notPred : '~' notPred | pPred;
+        pPred : '(' impPred ')' | equationPredicate | predicateVariable;
+         */
     private class FirstVisitor extends FirstGrammarBaseVisitor<Type> {
         private final List<Predicate> parsedPredicates = new ArrayList<Predicate>();
         public List<Predicate> getParsedPredicates() { return parsedPredicates; }
@@ -209,6 +209,10 @@ public class FirstParser {
             corpus.addAxiomIfNew(predicate);
         }
         return corpus;
+    }
+
+    public Theorem parseTheorem(String theorem) {
+        return new Theorem(parsePredicate(theorem));
     }
 
     public Predicate parsePredicate(String predicate) {

@@ -84,4 +84,19 @@ public class VariableAssignmentTest extends BaseTest {
         assertEquals(result, expectedResult);
         assertEquals(((Variable) result.getChild(2)).getBinding(), binding);
     }
+
+    @Test
+    public void intersectBugTest() {
+        Variable aVar = parser.parseVariable("A");
+        Variable bVar = parser.parseVariable("B");
+        Predicate dontcare = parser.parsePredicate("A|~A");
+
+        VariableAssignment firstAssignment = new VariableAssignment();
+        firstAssignment.put(aVar, dontcare);
+        VariableAssignment secondAssignment = new VariableAssignment();
+        secondAssignment.put(bVar, dontcare);
+        VariableAssignment intersection = firstAssignment.intersect(secondAssignment);
+
+        assertEquals(2, intersection.size());
+    }
 }

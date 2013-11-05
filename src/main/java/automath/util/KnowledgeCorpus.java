@@ -16,8 +16,10 @@ public interface KnowledgeCorpus extends Cloneable {
     public boolean addAxiomIfNew(Predicate axiom); // Add to corpus if previously unknown, and return whether added
     public boolean addInferenceIfNew(Inference inference); // Add to corpus if new result, and return whether added
     public boolean isKnown(Predicate predicate); // Is this predicate part of the corpus of knowledge?
+
     public Predicate get(int i); // Get the i-th predicate
     public Inference getInference(Predicate predicate); // Get the reasoning step for a predicate
+    public List<Theorem> getTheorems(); // Return a list of theorems in the corpus
     public int size(); // Number of facts
 
     public KnowledgeCorpus clone();

@@ -5,6 +5,7 @@ import automath.BaseTest;
 import automath.type.Predicate;
 import automath.type.Theorem;
 import automath.type.Variable;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -13,12 +14,16 @@ import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class VariableBindingProcessorTest extends BaseTest {
+    @Ignore
     @Test
     public void unbindingTest() {
         corpus = new SimpleKnowledgeCorpus();
         Theorem theorem = new Theorem(parser.parsePredicate("a=b -> b=a"));
         corpus.addAxiomIfNew(theorem);
 
+        // TODO: it isn't the assumption that binds this but the implied quantifier
+        // ie we read this as "assume there exists x such that x=4",
+        // but syntactically could also be "for every x, x is 4"
         Predicate assumption = parser.parsePredicate("x=4");
         assertNull(((Variable) assumption.getChild(0)).getBinding());
         corpus.addInferenceIfNew(Inference.assumption(assumption));

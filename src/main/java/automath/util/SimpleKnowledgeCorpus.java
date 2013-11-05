@@ -26,6 +26,8 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
             result = new Theorem(result);
 
         result.setLabel(Integer.toString(size()+1));
+
+        // TODO: this is also not new if we already knew this result but with fewer assumptions
         if (factToInference.containsKey(result)) return false;
         facts.add(result);
         factToInference.put(result, inference);
@@ -58,6 +60,19 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
         return null;
     }
 
+    /**
+     * TODO: Optimize this by caching theorems
+     * @return
+     */
+    @Override
+    public List<Theorem> getTheorems() {
+        List<Theorem> knownTheorems = new ArrayList<Theorem>();
+        for (Predicate fact : facts) {
+            if (fact instanceof Theorem) knownTheorems.add((Theorem) fact);
+        }
+        return knownTheorems;
+    }
+
     @Override
     public int size() { return facts.size(); }
 
@@ -86,10 +101,12 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
 
     @Override
     public List<Inference> getLegalInferences(Theorem theorem) {
+        List<Inference> legalInferences = new ArrayList<Inference>();
         Predicate antecedent = theorem.getAntecedent();
 
         if (antecedent.isCompoundPredicate()) { // Process compound predicates recursively
-            return getLegalInferences_CompoundAntecedent(theorem);
+            legalInferences.addAll(getLegalInferences_CompoundAntecedent(theorem));
+            if (theorem.getConsequent() == Predicate.TRUE) return legalInferences; // If in a recursion, stop
         }
 
         if (theorem == Theorem.REDUCTION) { // Search for reductions
@@ -97,7 +114,6 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
         }
 
         // Get variable legal variable assignments for a normal theorem
-        List<Inference> legalInferences = new ArrayList<Inference>();
         for (Predicate fact : facts) {
             Inference inference = new Inference();
             inference.variableAssignment = antecedent.getVariableAssignmentTo(fact);
@@ -108,7 +124,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
         }
 
         // Apply the variable assignments if this is the top-level theorem
-        if (theorem.getConsequent() != Predicate.EMPTY) {
+        if (theorem.getConsequent() != Predicate.TRUE) {
             performInferencesWithTheorem(legalInferences, theorem);
         }
 
@@ -121,8 +137,8 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
     private List<Inference> getLegalInferences_CompoundAntecedent(Theorem theorem) {
         List<Inference> legalInferences = new ArrayList<Inference>();
 
-        Theorem lhsTheorem = new Theorem(theorem.getAntecedent().getLhs(), Predicate.EMPTY);
-        Theorem rhsTheorem = new Theorem(theorem.getAntecedent().getRhs(), Predicate.EMPTY);
+        Theorem lhsTheorem = new Theorem(theorem.getAntecedent().getLhs(), Predicate.TRUE);
+        Theorem rhsTheorem = new Theorem(theorem.getAntecedent().getRhs(), Predicate.TRUE);
 
         List<Inference> lhsAssignments = getLegalInferences(lhsTheorem);
         List<Inference> rhsAssignments = getLegalInferences(rhsTheorem);
@@ -140,7 +156,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
         }
 
         // Apply the variable assignments if this is the top-level theorem
-        if (theorem.getConsequent() != Predicate.EMPTY) {
+        if (theorem.getConsequent() != Predicate.TRUE) {
             performInferencesWithTheorem(legalInferences, theorem);
         }
 

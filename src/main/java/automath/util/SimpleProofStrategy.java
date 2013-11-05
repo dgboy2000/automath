@@ -17,31 +17,20 @@ public class SimpleProofStrategy implements ProofStrategy {
     private static final int MAX_NUM_ASSERTIONS = 4;
 
     private final Predicate goal; // The result to prove
-    private final KnowledgeCorpus axioms; // The unchanging set of axioms
     private final KnowledgeCorpus currentKnowledge; // The current set of known facts
     private int numAssertionsLimit = 1;
 
 
     public SimpleProofStrategy(Predicate goal, KnowledgeCorpus axioms) {
         this.goal = goal;
-        this.axioms = axioms.clone();
         this.currentKnowledge = axioms.clone();
-    }
-
-    private List<Theorem> getKnownTheorems() {
-        List<Theorem> knownTheorems = new ArrayList<Theorem>();
-        for (int factInd = 0; factInd < currentKnowledge.size(); ++factInd) {
-            Predicate curFact = currentKnowledge.get(factInd);
-            if (curFact instanceof Theorem) knownTheorems.add((Theorem) curFact);
-        }
-        return knownTheorems;
     }
 
     /*
      * Do the next layer of searching and return whether anything changed
      */
     private boolean executeOneRoundOfInference() {
-        List<Theorem> rulesOfInference = getKnownTheorems();
+        List<Theorem> rulesOfInference = currentKnowledge.getTheorems();
         rulesOfInference.add(Theorem.REDUCTION);
 
         Map<Predicate, Inference> resultToInference = new HashMap<Predicate, Inference>();

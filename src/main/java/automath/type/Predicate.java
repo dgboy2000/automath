@@ -22,12 +22,24 @@ public class Predicate extends Expression {
         return false;
     }
 
-    public static Predicate EMPTY = new Predicate() {
+    public static final Predicate TRUE = new Predicate() {
         @Override
         public boolean isAssignableFrom(Type dontCare) {
             return true;
         }
     };
+    public static final Predicate FALSE = new Predicate() {
+        @Override
+        public boolean isAssignableFrom(Type dontCare) {
+            return false;
+        }
+    };
+    public static final Predicate CONTRADICTION = new Predicate(
+            new PredicateVariable("A"),
+            Operator.AND,
+            new Predicate(Operator.NOT, new PredicateVariable("A"))
+    );
+
 
     public Predicate() {}
 
@@ -83,7 +95,7 @@ public class Predicate extends Expression {
         assumption.getAssumptions().addAll(this.getAssumptions());
         assumption.getAssumptions().add(assumption);
 
-        new ExpressionVisitor(VariableBindingProcessor.bindingProcessor(assumption)).visit(assumption);
+//        new ExpressionVisitor(VariableBindingProcessor.bindingProcessor(assumption)).visit(assumption);
 
         return assumption;
     }
@@ -113,7 +125,7 @@ public class Predicate extends Expression {
     public static boolean isPredicate(Type type) {
         return (type instanceof Predicate) || (
                 (type instanceof Variable) &&
-                ((Variable) type).isTypeAssignableFrom(Predicate.EMPTY)
+                ((Variable) type).isTypeAssignableFrom(Predicate.TRUE)
         );
     }
 

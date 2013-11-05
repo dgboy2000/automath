@@ -1,5 +1,6 @@
 package automath.type;
 
+import automath.parser.FirstParser;
 import automath.util.VariableAssignment;
 
 /**
@@ -10,18 +11,22 @@ public class Theorem extends Predicate {
     private Predicate consequent; public Predicate getConsequent() { return consequent; }
 
     // Denote an axiom. Will be the inference reason for all axioms
-    public static Theorem AXIOM = new Theorem(Predicate.EMPTY, Predicate.EMPTY) {
+    public static final Theorem AXIOM = new Theorem(Predicate.TRUE, Predicate.TRUE) {
         @Override public String getName() { return "AXIOM"; }
     };
 
     // Represent the process of assuming something. Will be the inference reason for all assumptions
-    public static Theorem ASSUMPTION = new Theorem(Predicate.EMPTY, Predicate.EMPTY) {
+    public static final Theorem ASSUMPTION = new Theorem(Predicate.TRUE, Predicate.TRUE) {
         @Override public String getName() { return "ASSUMPTION"; }
     };
 
     // Assumption ==> Derived result
-    public static Theorem REDUCTION = new Theorem(Predicate.EMPTY, Predicate.EMPTY) {
+    public static final Theorem REDUCTION = new Theorem(Predicate.TRUE, Predicate.TRUE) {
         @Override public String getName() { return "REDUCTION"; }
+    };
+
+    public static final Theorem CONTRADICTION = new Theorem(Predicate.CONTRADICTION, Predicate.FALSE) {
+        @Override public String getName() { return "CONTRADICTION"; }
     };
 
     public Theorem() {}
@@ -49,10 +54,15 @@ public class Theorem extends Predicate {
     }
 
     // Apply the theorem and return the resulting new predicate
-    public Predicate apply(Predicate predicate) {
+    public Predicate applyTo(Predicate predicate) {
         return antecedent.getVariableAssignmentTo(predicate).applyTo(consequent);
     }
     public Predicate apply(VariableAssignment variableAssignment) {
+        // TODO: would be cleaner to have this special case be handled by the regular alg
+        if ((consequent instanceof PredicateVariable) && consequent.getChildren().size() == 0) {
+            return (Predicate) variableAssignment.get((PredicateVariable) consequent);
+        }
+
         return variableAssignment.applyTo(consequent);
     }
 
