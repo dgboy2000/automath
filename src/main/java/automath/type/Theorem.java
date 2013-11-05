@@ -6,8 +6,8 @@ import automath.util.VariableAssignment;
  * A proven rule of inference
  */
 public class Theorem extends Predicate {
-    private final Predicate antecedent; public Predicate getAntecedent() { return antecedent; }
-    private final Predicate consequent; public Predicate getConsequent() { return consequent; }
+    private Predicate antecedent; public Predicate getAntecedent() { return antecedent; }
+    private Predicate consequent; public Predicate getConsequent() { return consequent; }
 
     // Denote an axiom. Will be the inference reason for all axioms
     public static Theorem AXIOM = new Theorem(Predicate.EMPTY, Predicate.EMPTY) {
@@ -24,6 +24,7 @@ public class Theorem extends Predicate {
         @Override public String getName() { return "REDUCTION"; }
     };
 
+    public Theorem() {}
     public Theorem(Predicate antecedent, Predicate consequent) {
         super(antecedent, Operator.IMPLIES, consequent);
         this.antecedent = antecedent;
@@ -61,5 +62,15 @@ public class Theorem extends Predicate {
                 .append(Operator.IMPLIES)
                 .append(consequent.toString())
                 .toString();
+    }
+
+
+    /**
+     * In addition to cloning the expression, set precedent and antecedent.
+     * @return
+     */
+    @Override
+    public Theorem clone() {
+        return new Theorem((Predicate) super.clone());
     }
 }

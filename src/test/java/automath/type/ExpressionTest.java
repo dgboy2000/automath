@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the Expression
@@ -20,5 +21,20 @@ public class ExpressionTest extends BaseTest {
 
         // TODO: figure out how to create a new instance of a variable class
         assertEquals(equation, equation.clone());
+    }
+
+    @Test
+    public void testBecomeCloneOf() {
+        Expression blank = new Expression();
+        Expression sum = parser.parseExpression("x+4");
+        Expression flippedSum = parser.parseExpression("4+x");
+
+        blank.becomeCloneOf(flippedSum);
+        assertEquals(blank, flippedSum);
+        assertNotSame(blank, sum);
+
+        blank.becomeCloneOf(sum);
+        assertEquals(blank, sum);
+        assertNotSame(blank, flippedSum);
     }
 }

@@ -13,7 +13,7 @@ import java.util.Map;
  * Will need to speedup later, this is just to make dev happen fast.
  */
 public class SimpleProofStrategy implements ProofStrategy {
-    private static final int MAX_ROUNDS_OF_INFERENCE = 20;
+    private static final int MAX_ROUNDS_OF_INFERENCE = 5;
     private static final int MAX_NUM_ASSERTIONS = 4;
 
     private final Predicate goal; // The result to prove
@@ -106,15 +106,20 @@ public class SimpleProofStrategy implements ProofStrategy {
             for (int i=0; i<MAX_ROUNDS_OF_INFERENCE; ++i) {
                 if (currentKnowledge.isKnown(goal)) return true;
                 if (!executeOneRoundOfInference()) break;
-                System.out.println("Finished inference round "+(i+1)+", assertions limit "+(j+1));
+                System.out.println("Finished inference round " + (i + 1) + " with " + currentKnowledge.size() + " known facts");
+                System.out.println(currentKnowledge.toString());
             }
         }
         return currentKnowledge.isKnown(goal);
     }
 
+    /**
+     * A proof is a post-order traversal of a
+     * @return
+     */
     @Override
-    public Proof generateProof() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Proof generateProof(Predicate goal) {
+        return new Proof(goal, currentKnowledge);
     }
 
     @Override

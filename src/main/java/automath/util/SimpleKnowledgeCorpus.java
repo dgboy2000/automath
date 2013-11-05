@@ -35,8 +35,8 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
     @Override
     public boolean isKnown(Predicate predicate) {
         for (Predicate fact : facts) {
+            if (fact.getAssumptions().size() > 0) continue;
             if (fact.isAssignableFrom(predicate)) {
-                fact.isAssignableFrom(predicate);
                 return true;
             }
         }
@@ -45,6 +45,18 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
 
     @Override
     public Predicate get(int i) { return facts.get(i); }
+
+    @Override
+    public Inference getInference(Predicate predicate) {
+        // TODO: why is hash lookup failing? is something getting modified after insertion?
+//        return factToInference.get(predicate);
+
+        for (Inference inference : this.factToInference.values()) {
+            if (inference.result.equals(predicate)) return inference;
+        }
+
+        return null;
+    }
 
     @Override
     public int size() { return facts.size(); }
@@ -144,6 +156,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
         for (Inference inference : inferences) {
             inference.theorem = theorem;
             inference.result = theorem.apply(inference.variableAssignment);
+            ExpressionSimplificationProcessor.process(inference.result);
 
             // We are assuming everything that was assumed by the precendents and the theorem
             inference.result.getAssumptions().addAll(theorem.getAssumptions());

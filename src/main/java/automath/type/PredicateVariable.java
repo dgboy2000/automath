@@ -32,6 +32,22 @@ public class PredicateVariable extends Predicate implements Variable {
     }
 
     @Override
+    public int hashCode() {
+        int code = getName().hashCode();
+        return code;
+    }
+
+    @Override
+    public boolean equals(Object otherObject) {
+        if (otherObject == null || !otherObject.getClass().equals(getClass())) return false;
+        Variable otherVariable = (Variable) otherObject;
+        return getName().equals(otherVariable.getName()) &&
+                this.getType() == otherVariable.getType() &&
+                (!this.isBound() ||
+                        this.getBinding() == otherVariable.getBinding());
+    }
+
+    @Override
     public PredicateVariable clone() {
         return new PredicateVariable(this);
     }

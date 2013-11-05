@@ -22,13 +22,17 @@ public class ExpressionVisitor {
 
     public boolean visitExpression(Expression expression) {
         for (Type child : expression.getChildren()) {
+            if (expression == child)
+                throw new RuntimeException();
             if (!visit(child)) return false;
         }
 
         return processor.process(expression);
     }
 
-    public boolean visit(Type type) {
+    public boolean visit(final Type type) {
+        new AutomathLogger() { @Override public String fine() { return "ExpressionVisitor at: "+type.toString(); }};
+
         return type instanceof Expression ?
                 visitExpression((Expression) type) :
                 processor.process(type);

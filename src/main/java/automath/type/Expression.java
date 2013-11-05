@@ -63,14 +63,20 @@ public class Expression extends BaseType {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (PRINT_PARENTHESES) stringBuilder.append(" (");
+        if (PRINT_PARENTHESES) stringBuilder.append("(");
         for (Type child : children) stringBuilder.append(child.toString());
-        if (PRINT_PARENTHESES) stringBuilder.append(") ");
+        if (PRINT_PARENTHESES) stringBuilder.append(")");
         return stringBuilder.toString();
     }
 
     @Override
     public int hashCode() {
         return ExpressionHashProcessor.hash(this);
+    }
+
+    public void becomeCloneOf(Expression expression) {
+        this.getChildren().clear();
+        this.getChildren().addAll(expression.getChildren());
+        this.setName(expression.getName());
     }
 }

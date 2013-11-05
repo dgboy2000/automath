@@ -1,6 +1,7 @@
 package automath.util;
 
 import automath.type.Expression;
+import automath.type.Predicate;
 import automath.type.Type;
 import automath.type.Variable;
 
@@ -11,6 +12,15 @@ import java.util.Map;
  * Represents a mapping from variables to targets, for example in an expression.
  */
 public class VariableAssignment extends HashMap<Variable, Type> implements ExpressionAlignmentVisitor.TypeProcessor {
+    @Override
+    public Type put(Variable variable, Type type) {
+        if (type instanceof Predicate) {
+            type = ((Predicate) type).clone();
+            ((Predicate) type).setLabel(null);
+        }
+        return super.put(variable, type);
+    }
+
     public <T extends Expression> T applyTo(T expression) {
         T result = (T) expression.clone();
 
