@@ -95,7 +95,7 @@ public class Predicate extends Expression {
         assumption.getAssumptions().addAll(this.getAssumptions());
         assumption.getAssumptions().add(assumption);
 
-//        new ExpressionVisitor(VariableBindingProcessor.bindingProcessor(assumption)).visit(assumption);
+        new ExpressionVisitor(VariableBindingProcessor.bindingProcessor(assumption)).visit(assumption);
 
         return assumption;
     }
@@ -146,8 +146,13 @@ public class Predicate extends Expression {
     private Set<String> getAssumptionLabelsWithoutSelf() {
         Set<String> assumptionLabels = new HashSet<String>();
         for (Predicate assumption : getAssumptions()) {
+            if (this == assumption) continue;
             String label = assumption.getLabel();
-            if (label == null) throw new RuntimeException("Encountered assumption with null label");
+
+            // TODO: labels are a hack to avoid cyclic assumption graphs. Find better method
+            if (label == null)
+                throw new RuntimeException("Encountered assumption with null label");
+
             if (label.equals(this.getLabel())) continue;
             assumptionLabels.add(label);
         }

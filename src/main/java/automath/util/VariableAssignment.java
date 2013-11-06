@@ -1,9 +1,6 @@
 package automath.util;
 
-import automath.type.Expression;
-import automath.type.Predicate;
-import automath.type.Type;
-import automath.type.Variable;
+import automath.type.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +19,15 @@ public class VariableAssignment extends HashMap<Variable, Type> implements Expre
     }
 
     public <T extends Expression> T applyTo(T expression) {
+        // Top-level variables must be handled separately from the visitor, which only looks at children
+        if ((expression instanceof PredicateVariable) && expression.getChildren().size() == 0) {
+            PredicateVariable predicateVariable = (PredicateVariable) expression;
+            if (!this.containsKey(predicateVariable)) return (T) predicateVariable.clone();
+            Expression result = (Expression) this.get(predicateVariable);
+            if (!predicateVariable.isAssignableFrom(result)) throw new RuntimeException();
+            return (T) result;
+        }
+
         T result = (T) expression.clone();
 
         new ExpressionAlignmentVisitor(this).visit(expression, result);
@@ -38,7 +44,7 @@ public class VariableAssignment extends HashMap<Variable, Type> implements Expre
     public Type applyTo(Type type) {
         if (type instanceof Expression) return (Expression) applyTo((Expression) type);
         if (type instanceof Variable) return applyTo((Variable) type);
-        throw new IllegalArgumentException("Can only apply variable assignments to Types or Expressions");
+        throw new IllegalArgumentException("Can only apply variable assignments to Variables or Expressions");
     }
 
     public boolean process(Type sourceType, Type destType) {

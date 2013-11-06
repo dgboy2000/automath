@@ -1,6 +1,7 @@
 package automath.util;
 
 import automath.type.Expression;
+import automath.type.Predicate;
 import automath.type.Type;
 import automath.type.Variable;
 
@@ -19,8 +20,21 @@ public class SymbolCountProcessor implements ExpressionVisitor.Processor {
     }
 
     public static int countSymbolsIn(Expression expression) {
+        int symbolCount = 0;
         SymbolCountProcessor processor = new SymbolCountProcessor();
         new ExpressionVisitor(processor).visit(expression);
-        return processor.getSymbolCount();
+        symbolCount += processor.getSymbolCount();
+
+        if (expression instanceof Predicate) {
+            Predicate predicate = (Predicate) expression;
+            int assumptionCount = predicate.getAssumptions().size();
+            for (Predicate assumption : predicate.getAssumptions()) {
+                if (assumption.equals(predicate)) assumptionCount += symbolCount; // Avoid infinite recursion
+                else assumptionCount += countSymbolsIn(assumption);
+            }
+            symbolCount += assumptionCount;
+        }
+
+        return symbolCount;
     }
 }

@@ -12,6 +12,8 @@ import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class SimpleProofStrategyTest extends BaseTest {
+    protected ProofStrategy prover;
+
     @Before
     public void init() {
         corpus = new SimpleKnowledgeCorpus();
@@ -24,9 +26,9 @@ public class SimpleProofStrategyTest extends BaseTest {
         axioms.addAxiomIfNew(parser.parsePredicate("a=b"));
         axioms.addAxiomIfNew(parser.parsePredicate("b=4"));
         axioms.addAxiomIfNew(parser.parsePredicate("f=g & g=h -> f=h"));
-        ProofStrategy proofStrategy = new SimpleProofStrategy(goal, axioms);
+        ProofStrategy prover = new SimpleProofStrategy(goal, axioms);
 
-        assertTrue(proofStrategy.execute());
+        assertTrue(prover.execute());
     }
 
     @Test
@@ -37,24 +39,23 @@ public class SimpleProofStrategyTest extends BaseTest {
         axioms.addAxiomIfNew(parser.parsePredicate("2+2=4"));
         axioms.addAxiomIfNew(parser.parsePredicate("f=g & g=h -> f=h"));
         axioms.addAxiomIfNew(parser.parsePredicate("f=g -> g=f"));
-        ProofStrategy proofStrategy = new SimpleProofStrategy(goal, axioms);
+        ProofStrategy prover = new SimpleProofStrategy(goal, axioms);
 
-        assertTrue(proofStrategy.execute());
+        assertTrue(prover.execute());
     }
 
     @Test
     @Ignore
     public void testLogicalInference() {
-        String test = new StringBuilder("A|B -> (~A -> B)\n")
-                .append("(A -> B) -> (~A | B)\n")
-                .append("A|B -> B|A\n")
-                .append("(A|B) & ~A -> B\n")
+        String test = new StringBuilder("A&B -> A\n")
+                .append("A&B -> B\n")
+                .append("A&(A->B)->B\n")
                 .toString();
         Predicate goal = parser.parsePredicate("(A->B) & (B->C) -> (A->C)");
-        ProofStrategy proofStrategy = new SimpleProofStrategy(goal, parser.parseFile(test));
+        ProofStrategy prover = new SimpleProofStrategy(goal, parser.parseFile(test));
 
-        boolean isSuccessful = proofStrategy.execute();
-        System.out.println(proofStrategy.getCurrentKnowledge().toString());
+        boolean isSuccessful = prover.execute();
+        System.out.println(prover.getCurrentKnowledge().toString());
         assertTrue(isSuccessful);
     }
 
@@ -69,11 +70,11 @@ public class SimpleProofStrategyTest extends BaseTest {
                 .append("(A|B) & ~A -> B\n")
                 .toString();
         Predicate goal = parser.parsePredicate("A & (A -> B) -> B");
-        ProofStrategy proofStrategy = new SimpleProofStrategy(goal, parser.parseFile(test));
+        prover = new SimpleProofStrategy(goal, parser.parseFile(test));
 
-        boolean isSuccessful = proofStrategy.execute();
-        System.out.println(proofStrategy.getCurrentKnowledge().toString());
+        boolean isSuccessful = prover.execute();
+        System.out.println(prover.getCurrentKnowledge().toString());
         assertTrue(isSuccessful);
-        System.out.println(proofStrategy.generateProof(goal).toString());
+        System.out.println(prover.generateProof(goal).toString());
     }
 }

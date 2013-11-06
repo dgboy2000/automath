@@ -51,7 +51,7 @@ public class SimpleKnowledgeCorpusTest extends BaseTest {
         // TODO: variables can be bound over an entire corpus, don't make every instance of a var equal
         assertTrue(corpus.addAxiomIfNew(parser.parsePredicate("a=b")));
         assertFalse(corpus.addAxiomIfNew(parser.parsePredicate("a=b")));
-        assertFalse(corpus.addAxiomIfNew(parser.parsePredicate("b=c")));
+        assertTrue(corpus.addAxiomIfNew(parser.parsePredicate("b=c")));
         assertTrue(corpus.addAxiomIfNew(parser.parsePredicate("b=4")));
 
         assertTrue(corpus.addAxiomIfNew(parser.parsePredicate("x=y -> y=x")));

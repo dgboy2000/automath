@@ -8,7 +8,7 @@ import automath.type.Variable;
  * Visit every node (type instance) in an expression in parallel with another expression.
  * Supports joint processing
  */
-public class ExpressionAlignmentVisitor {
+public class ExpressionAlignmentVisitor extends BaseTypeVisitor {
     public interface TypeProcessor {
         /*
          * Processes the visited nodes and returns true to continue, false to terminate early
@@ -41,6 +41,8 @@ public class ExpressionAlignmentVisitor {
     }
 
     public boolean visit(Type type, Type otherType) {
+        if (!isFirstTimeSeeing(type)) return true;
+
         if (type instanceof Variable) return processor.process(type, otherType);
         return type instanceof Expression ?
                 visitFromExpression((Expression) type, otherType) :

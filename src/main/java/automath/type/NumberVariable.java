@@ -30,6 +30,9 @@ public class NumberVariable extends BaseType implements Variable {
         return code;
     }
 
+    /*
+    Same problem with cyclic assumption dependencies.
+     */
     @Override
     public boolean equals(Object otherObject) {
         if (otherObject == null || !otherObject.getClass().equals(getClass())) return false;
@@ -37,7 +40,7 @@ public class NumberVariable extends BaseType implements Variable {
         return getName().equals(otherVariable.getName()) &&
                 this.getType() == otherVariable.getType() &&
                 (!this.isBound() ||
-                this.getBinding().equals(otherVariable.getBinding()));
+                this.getBinding() == otherVariable.getBinding()); // TODO: should really be equals()
     }
 
     @Override

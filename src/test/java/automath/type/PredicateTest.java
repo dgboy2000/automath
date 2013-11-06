@@ -1,6 +1,7 @@
 package automath.type;
 
 import automath.BaseTest;
+import automath.util.Inference;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,5 +55,13 @@ public class PredicateTest extends BaseTest {
         assertFalse(flippedEquation.equals(equation));
         assertFalse(equation.equals(flippedEquation));
         assertFalse(numberEquation.equals(equation));
+    }
+
+    @Test
+    public void assumptionTest() {
+        Predicate assumption1 = Inference.assumption(parser.parsePredicate("A")).result;
+        Predicate assumption2 = Inference.assumption(parser.parsePredicate("A")).result;
+        assertEquals(assumption1.hashCode(), assumption2.hashCode());
+        assertEquals(assumption1, assumption2);
     }
 }

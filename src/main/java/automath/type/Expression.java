@@ -39,8 +39,14 @@ public class Expression extends BaseType {
         if (!(otherObject instanceof Expression)) return false;
         Expression otherExpression = (Expression) otherObject;
 
-        // TODO: inefficient; implement a tree walker
-        return this.isAssignableFrom(otherExpression) && otherExpression.isAssignableFrom(this);
+        int numChildren = this.getChildren().size();
+        if (numChildren != otherExpression.getChildren().size()) return false;
+        for (int childInd=0; childInd<numChildren; ++childInd) {
+            if (!this.getChild(childInd).equals(otherExpression.getChild(childInd))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

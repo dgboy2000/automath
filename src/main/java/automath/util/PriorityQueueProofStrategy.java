@@ -11,9 +11,11 @@ import java.util.*;
 public class PriorityQueueProofStrategy extends PriorityQueue<Inference> implements ProofStrategy {
     private static final int MAX_CORPUS_SIZE = 200;
     private static final int RECOMPUTE_INFERENCES_PERIOD = 20;
+    private static final int MAX_PREDICATE_COMPLEXITY = 15;
 
     private final Predicate goal; // The result to prove
     private final KnowledgeCorpus currentKnowledge; // The current set of known facts
+    private final Set<Predicate> seenResults = new HashSet<Predicate>(); // All predicates considered
     private int numNewInferences = 0;
 
     public final static Comparator<Inference> SYMBOL_COUNTER = new Comparator<Inference>() {
@@ -49,11 +51,11 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
 
         AntecedentExtractionProcessor processor = new AntecedentExtractionProcessor();
         ExpressionVisitor visitor = new ExpressionVisitor(processor);
-//        for (int i=0; i<currentKnowledge.size(); ++i) {
-//            Predicate fact = currentKnowledge.get(i);
-//            if (fact.isAssumption()) currentAssumptions.add(fact);
-//            visitor.visit(fact);
-//        }
+        for (int i=0; i<currentKnowledge.size(); ++i) {
+            Predicate fact = currentKnowledge.get(i);
+            if (fact.isAssumption()) currentAssumptions.add(fact);
+            visitor.visit(fact);
+        }
         visitor.visit(goal);
 
         for (Predicate antecedent : processor.getAntecedents()) {
@@ -78,13 +80,12 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
     @Override
     public boolean execute() {
         int inferenceCnt = 0;
-        numNewInferences = -1; // Hack to force refresh to work the first time
-        refreshInferences();
+        refreshInferences(true);
         while (currentKnowledge.size() < MAX_CORPUS_SIZE) {
             if (currentKnowledge.isKnown(goal)) return true;
-            if (!processNextInference() || numNewInferences % RECOMPUTE_INFERENCES_PERIOD == 0) {
-                if (!refreshInferences())
-                    return false;
+            if (!processNextInference() || (
+                    numNewInferences % RECOMPUTE_INFERENCES_PERIOD == 0 && numNewInferences > 0)) {
+                if (!refreshInferences(false)) return false;
             }
             ++inferenceCnt;
         }
@@ -96,15 +97,32 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
      * Recompute legal inferences that may be made
      * @return True if we were able to add new inferences since last time.
      */
-    private boolean refreshInferences() {
-        if (numNewInferences == 0) return false;
+    private boolean refreshInferences(boolean force) {
+        if (numNewInferences == 0 && !force) return false;
         numNewInferences = 0;
 
+        List<Inference> candidateInferences = new ArrayList<Inference>();
+
         for (Theorem theorem : currentKnowledge.getTheorems()) {
-            this.addAll(currentKnowledge.getLegalInferences(theorem));
+            candidateInferences.addAll(currentKnowledge.getLegalInferences(theorem));
         }
-        this.addAll(currentKnowledge.getLegalInferences(Theorem.REDUCTION));
-        this.addAssumptions();
+        candidateInferences.addAll(currentKnowledge.getLegalInferences(Theorem.REDUCTION));
+        candidateInferences.addAll(generateCandidateAssumptions());
+
+        for (Inference candidate : candidateInferences) {
+            if (this.seenResults.contains(candidate.result)
+                    || SymbolCountProcessor.countSymbolsIn(candidate.result) > MAX_PREDICATE_COMPLEXITY) {
+               continue;
+            }
+            this.seenResults.add(candidate.result);
+            this.add(candidate);
+        }
+
+        new AutomathLogger(){@Override public String info() {
+            return "Refresh with existing facts: "+currentKnowledge.size()+
+                    "\nCurrent best complexity: "+SymbolCountProcessor.countSymbolsIn(peek().result);
+        }};
+
         return true;
     }
 

@@ -6,7 +6,7 @@ import automath.type.Type;
 /**
  * Visit and process every node in an expression.
  */
-public class ExpressionVisitor {
+public class ExpressionVisitor extends BaseTypeVisitor {
     public interface Processor {
         /**
          * Processes the visited nodes and returns true to continue, false to terminate early
@@ -32,6 +32,7 @@ public class ExpressionVisitor {
 
     public boolean visit(final Type type) {
         new AutomathLogger() { @Override public String fine() { return "ExpressionVisitor at: "+type.toString(); }};
+        if (!isFirstTimeSeeing(type)) return true;
 
         return type instanceof Expression ?
                 visitExpression((Expression) type) :

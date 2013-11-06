@@ -58,11 +58,6 @@ public class Theorem extends Predicate {
         return antecedent.getVariableAssignmentTo(predicate).applyTo(consequent);
     }
     public Predicate apply(VariableAssignment variableAssignment) {
-        // TODO: would be cleaner to have this special case be handled by the regular alg
-        if ((consequent instanceof PredicateVariable) && consequent.getChildren().size() == 0) {
-            return (Predicate) variableAssignment.get((PredicateVariable) consequent);
-        }
-
         return variableAssignment.applyTo(consequent);
     }
 

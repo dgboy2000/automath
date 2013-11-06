@@ -23,4 +23,10 @@ public class NaturalNumber extends BaseType {
     public boolean isAssignableFrom(Type type) {
         return (type instanceof NaturalNumber) && value == ((NaturalNumber) type).value;
     }
+
+    @Override
+    public boolean equals(Object otherObject) {
+        return (otherObject instanceof NaturalNumber) &&
+                this.getName().equals(((NaturalNumber) otherObject).getName());
+    }
 }

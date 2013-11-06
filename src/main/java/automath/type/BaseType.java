@@ -1,5 +1,7 @@
 package automath.type;
 
+import java.util.UUID;
+
 /**
  * Created with IntelliJ IDEA.
  * User: dannygoodman
@@ -8,16 +10,20 @@ package automath.type;
  * To change this template use File | Settings | File Templates.
  */
 public class BaseType implements Type, Cloneable {
+    private String id;
+    public String getId() { return id; }
+    protected void setId(String id) { this.id = id; }
+
     private String name;
     public String getName() { return name; }
     protected void setName(String name) { this.name = name; }
 
-    public BaseType() { }
+    public BaseType() { this.id = UUID.randomUUID().toString(); }
     public BaseType(String name) {
+        this();
         this.name = name;
     }
 
-    // TODO: override this in subclasses
     @Override
     public boolean isAssignableFrom(Type type) {
         return this.equals(type);

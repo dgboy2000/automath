@@ -23,6 +23,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
         // Convert to theorem if result is a theorem
         if (result.getChildren().size() == 3
                 && result.getChild(1) == Operator.IMPLIES)
+//                && result.getAssumptions().size() == 0) Why did I have this? Is wrong because theorems mean implications, in other words anything we can apply, which can include assumptions, but the result must include the same assumptions
             result = new Theorem(result);
 
         result.setLabel(Integer.toString(size()+1));
@@ -121,6 +122,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
                 inference.precedents.add(fact);
                 legalInferences.add(inference);
             }
+//            new AutomathLogger() {@Override public String fine() {return "Legal inference: ";}};
         }
 
         // Apply the variable assignments if this is the top-level theorem
@@ -150,6 +152,10 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
                 if (jointAssignment.variableAssignment != null) {
                     jointAssignment.precedents.addAll(lhs.precedents);
                     jointAssignment.precedents.addAll(rhs.precedents);
+                    if (theorem.apply(jointAssignment.variableAssignment) == null) {
+                        theorem.apply(jointAssignment.variableAssignment);
+                        throw new RuntimeException();
+                    }
                     legalInferences.add(jointAssignment);
                 }
             }
@@ -172,6 +178,10 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
         for (Inference inference : inferences) {
             inference.theorem = theorem;
             inference.result = theorem.apply(inference.variableAssignment);
+            if (inference.result == null) {
+                theorem.apply(inference.variableAssignment);
+                throw new RuntimeException();
+            }
             ExpressionSimplificationProcessor.process(inference.result);
 
             // We are assuming everything that was assumed by the precendents and the theorem
