@@ -4,6 +4,7 @@ import automath.type.Predicate;
 import automath.type.Theorem;
 import automath.type.visitor.ExpressionVisitor;
 import automath.type.visitor.processor.AntecedentExtractionProcessor;
+import automath.util.Mappable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,11 +35,14 @@ public class SimpleProofStrategy implements ProofStrategy {
     private boolean executeOneRoundOfInference() {
         List<Theorem> rulesOfInference = currentKnowledge.getTheorems();
         rulesOfInference.add(Theorem.REDUCTION);
+        return executeOnceRoundOfInferenceWith(rulesOfInference);
+    }
 
-        Map<Predicate, Inference> resultToInference = new HashMap<Predicate, Inference>();
+    private boolean executeOnceRoundOfInferenceWith(List<Theorem> rulesOfInference) {
+        Map<Mappable<Predicate>, Inference> resultToInference = new HashMap<Mappable<Predicate>, Inference>();
         for (Theorem rule : rulesOfInference) {
             for (Inference inference : currentKnowledge.getLegalInferences(rule)) {
-                resultToInference.put(inference.result, inference);
+                resultToInference.put(new Mappable<Predicate>(inference.result), inference);
                 if (inference.result == null) {
                     throw new RuntimeException("Null inference result");
                 }
@@ -93,7 +97,7 @@ public class SimpleProofStrategy implements ProofStrategy {
     public boolean execute() {
         for (int j=0; j<numAssertionsLimit; ++j) {
             System.out.println("Unproven with "+j+" joint assertions; increasing to "+(j+1));
-            addAssumptions();
+//            addAssumptions();
             for (int i=0; i<MAX_ROUNDS_OF_INFERENCE; ++i) {
                 if (currentKnowledge.isKnown(goal)) return true;
                 if (!executeOneRoundOfInference()) break;

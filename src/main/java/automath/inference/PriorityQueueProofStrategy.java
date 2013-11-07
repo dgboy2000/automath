@@ -75,12 +75,6 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
         return candidateAssumptions;
     }
 
-    private void addAssumptions() {
-        for (Inference assumption : generateCandidateAssumptions()) {
-            currentKnowledge.addInferenceIfNew(assumption);
-        }
-    }
-
     @Override
     public boolean execute() {
         int inferenceCnt = 0;
@@ -111,7 +105,7 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
             candidateInferences.addAll(currentKnowledge.getLegalInferences(theorem));
         }
         candidateInferences.addAll(currentKnowledge.getLegalInferences(Theorem.REDUCTION));
-        candidateInferences.addAll(generateCandidateAssumptions());
+//        candidateInferences.addAll(generateCandidateAssumptions());
 
         for (Inference candidate : candidateInferences) {
             if (this.seenResults.contains(candidate.result)

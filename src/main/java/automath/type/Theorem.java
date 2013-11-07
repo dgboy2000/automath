@@ -19,6 +19,7 @@ public class Theorem extends Predicate {
         @Override public String getName() { return "ASSUMPTION"; }
     };
 
+    // TODO: can only reduce by the last assumption on the stack
     // Assumption ==> Derived result
     public static final Theorem REDUCTION = new Theorem(Predicate.TRUE, Predicate.TRUE) {
         @Override public String getName() { return "REDUCTION"; }

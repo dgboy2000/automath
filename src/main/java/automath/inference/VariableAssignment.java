@@ -74,12 +74,14 @@ public class VariableAssignment extends HashMap<Variable, Type> implements Expre
             Type thisTarget = this.get(variable);
             Type otherTarget = variableTypeEntry.getValue();
 
+            // TODO: make this more readable / fix any logic bugs
             if (!this.containsKey(variable)) {
                 intersection.put(variable, variableTypeEntry.getValue());
             } else if (thisTarget.isAssignableFrom(otherTarget)) {
                 if ((thisTarget instanceof Variable) && !thisTarget.getName().equals(otherTarget.getName())) return null;
                 intersection.put(variable, otherTarget);
-            } else if (!otherTarget.isAssignableFrom(thisTarget) || !otherTarget.getName().equals(thisTarget.getName())) {
+            } else if (!otherTarget.isAssignableFrom(thisTarget) || ((otherTarget instanceof Variable) &&
+                    !otherTarget.getName().equals(thisTarget.getName()))) {
                 return null; // Variable assignments are not compatible
             }
             // TODO: names of unbound variables can be different but they could still be compatible.
