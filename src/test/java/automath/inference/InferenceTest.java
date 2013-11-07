@@ -1,7 +1,9 @@
-package automath.util;
+package automath.inference;
 
 
 import automath.BaseTest;
+import automath.inference.Inference;
+import automath.inference.SimpleKnowledgeCorpus;
 import automath.type.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;

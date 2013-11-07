@@ -1,6 +1,10 @@
-package automath.util;
+package automath.inference;
 
 import automath.BaseTest;
+import automath.inference.KnowledgeCorpus;
+import automath.inference.ProofStrategy;
+import automath.inference.SimpleKnowledgeCorpus;
+import automath.inference.SimpleProofStrategy;
 import automath.type.Predicate;
 import org.junit.Before;
 import org.junit.Ignore;

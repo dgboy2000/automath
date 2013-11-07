@@ -1,6 +1,8 @@
-package automath.util;
+package automath.inference;
 
 import automath.BaseTest;
+import automath.inference.SimpleKnowledgeCorpus;
+import automath.inference.VariableAssignment;
 import automath.type.Predicate;
 import automath.type.Theorem;
 import org.junit.Before;

@@ -1,5 +1,7 @@
-package automath.util;
+package automath.inference;
 
+import automath.inference.Inference;
+import automath.inference.KnowledgeCorpus;
 import automath.type.Predicate;
 import automath.type.Theorem;
 import org.apache.commons.lang3.StringUtils;

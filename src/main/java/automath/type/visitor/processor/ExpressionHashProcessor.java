@@ -1,8 +1,9 @@
-package automath.util;
+package automath.type.visitor.processor;
 
 import automath.type.Expression;
 import automath.type.Type;
 import automath.type.Variable;
+import automath.type.visitor.ExpressionVisitor;
 
 /**
  * Generate a cryptographically insecure hash of an expression to facilitate

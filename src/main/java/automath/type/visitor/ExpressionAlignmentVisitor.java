@@ -1,4 +1,4 @@
-package automath.util;
+package automath.type.visitor;
 
 import automath.type.Expression;
 import automath.type.Type;

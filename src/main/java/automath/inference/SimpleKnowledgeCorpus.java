@@ -1,8 +1,9 @@
-package automath.util;
+package automath.inference;
 
 import automath.type.Operator;
 import automath.type.Predicate;
 import automath.type.Theorem;
+import automath.type.visitor.processor.ExpressionSimplificationProcessor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;

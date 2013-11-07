@@ -1,8 +1,8 @@
 package automath.type;
 
-import automath.util.ExpressionHashProcessor;
-import automath.util.ExpressionVisitor;
-import automath.util.VariableBindingProcessor;
+import automath.type.visitor.processor.ExpressionHashProcessor;
+import automath.type.visitor.ExpressionVisitor;
+import automath.type.visitor.processor.VariableBindingProcessor;
 
 import java.util.*;
 

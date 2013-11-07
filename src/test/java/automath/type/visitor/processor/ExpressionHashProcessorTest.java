@@ -1,7 +1,8 @@
-package automath.util;
+package automath.type.visitor.processor;
 
 import automath.parser.FirstParser;
 import automath.type.Expression;
+import automath.type.visitor.processor.ExpressionHashProcessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

@@ -1,7 +1,8 @@
-package automath.util;
+package automath.type.visitor;
 
 import automath.type.Expression;
 import automath.type.Type;
+import automath.util.AutomathLogger;
 
 /**
  * Visit and process every node in an expression.

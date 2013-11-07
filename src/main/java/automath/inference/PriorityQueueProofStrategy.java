@@ -1,7 +1,11 @@
-package automath.util;
+package automath.inference;
 
 import automath.type.Predicate;
 import automath.type.Theorem;
+import automath.type.visitor.ExpressionVisitor;
+import automath.type.visitor.processor.AntecedentExtractionProcessor;
+import automath.type.visitor.processor.SymbolCountProcessor;
+import automath.util.AutomathLogger;
 
 import java.util.*;
 

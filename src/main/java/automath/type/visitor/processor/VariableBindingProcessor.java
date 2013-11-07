@@ -1,8 +1,9 @@
-package automath.util;
+package automath.type.visitor.processor;
 
 import automath.type.Predicate;
 import automath.type.Type;
 import automath.type.Variable;
+import automath.type.visitor.ExpressionVisitor;
 
 import java.util.HashSet;
 import java.util.Set;

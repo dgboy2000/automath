@@ -1,9 +1,9 @@
 package automath.type;
 
-import automath.util.ExpressionAlignmentVisitor;
-import automath.util.ExpressionHashProcessor;
-import automath.util.VariableAssignment;
-import automath.util.VariableAssignmentProcessor;
+import automath.type.visitor.ExpressionAlignmentVisitor;
+import automath.type.visitor.processor.ExpressionHashProcessor;
+import automath.inference.VariableAssignment;
+import automath.type.visitor.processor.VariableAssignmentProcessor;
 
 import java.util.ArrayList;
 import java.util.Arrays;

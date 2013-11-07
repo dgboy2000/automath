@@ -1,13 +1,11 @@
-package automath.util;
+package automath.inference;
 
 import automath.type.Predicate;
 import automath.type.Theorem;
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**

@@ -1,7 +1,8 @@
-package automath.util;
+package automath.type.visitor.processor;
 
 import automath.BaseTest;
 import automath.type.Predicate;
+import automath.type.visitor.processor.ExpressionSimplificationProcessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

@@ -1,7 +1,7 @@
 package automath.type;
 
 import automath.BaseTest;
-import automath.util.Inference;
+import automath.inference.Inference;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

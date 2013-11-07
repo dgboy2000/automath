@@ -1,10 +1,12 @@
-package automath.util;
+package automath.type.visitor.processor;
 
 
 import automath.BaseTest;
 import automath.type.Predicate;
 import automath.type.Theorem;
 import automath.type.Variable;
+import automath.inference.Inference;
+import automath.inference.SimpleKnowledgeCorpus;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;

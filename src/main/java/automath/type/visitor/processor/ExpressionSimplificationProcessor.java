@@ -1,8 +1,9 @@
-package automath.util;
+package automath.type.visitor.processor;
 
 import automath.type.Operator;
 import automath.type.Predicate;
 import automath.type.Type;
+import automath.type.visitor.ExpressionVisitor;
 
 /**
  * Simplify expressions in place

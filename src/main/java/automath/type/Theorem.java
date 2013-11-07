@@ -1,7 +1,6 @@
 package automath.type;
 
-import automath.parser.FirstParser;
-import automath.util.VariableAssignment;
+import automath.inference.VariableAssignment;
 
 /**
  * A proven rule of inference

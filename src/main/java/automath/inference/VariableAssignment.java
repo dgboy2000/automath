@@ -1,6 +1,7 @@
-package automath.util;
+package automath.inference;
 
 import automath.type.*;
+import automath.type.visitor.ExpressionAlignmentVisitor;
 
 import java.util.HashMap;
 import java.util.Map;

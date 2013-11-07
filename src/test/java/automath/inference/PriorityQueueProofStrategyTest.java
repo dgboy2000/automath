@@ -1,6 +1,8 @@
-package automath.util;
+package automath.inference;
 
 import automath.BaseTest;
+import automath.inference.PriorityQueueProofStrategy;
+import automath.inference.ProofStrategy;
 import automath.type.Predicate;
 import org.junit.Ignore;
 import org.junit.Test;

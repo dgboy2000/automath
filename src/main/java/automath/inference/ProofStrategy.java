@@ -1,4 +1,4 @@
-package automath.util;
+package automath.inference;
 
 import automath.type.Predicate;
 

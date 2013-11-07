@@ -1,7 +1,8 @@
-package automath.util;
+package automath.type.visitor.processor;
 
 import automath.BaseTest;
 import automath.type.Predicate;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -12,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 public class SymbolCountProcessorTest extends BaseTest {
     @Test
     public void symbolCountTest() {
-        assertEquals(SymbolCountProcessor.countSymbolsIn(parser.parsePredicate("A&B -> B&A")), 7);
+        Assert.assertEquals(SymbolCountProcessor.countSymbolsIn(parser.parsePredicate("A&B -> B&A")), 7);
         assertEquals(SymbolCountProcessor.countSymbolsIn(parser.parsePredicate("A|~A")), 4);
         assertEquals(SymbolCountProcessor.countSymbolsIn(parser.parsePredicate("x=2+2")), 5);
     }

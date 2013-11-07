@@ -1,9 +1,10 @@
-package automath.util;
+package automath.type.visitor.processor;
 
 import automath.type.Expression;
 import automath.type.Predicate;
 import automath.type.Type;
 import automath.type.Variable;
+import automath.type.visitor.ExpressionVisitor;
 
 /**
  * Count the number of terminal symbols in an expression

@@ -1,8 +1,10 @@
-package automath.util;
+package automath.type.visitor.processor;
 
 import automath.type.Expression;
 import automath.type.Type;
 import automath.type.Variable;
+import automath.type.visitor.ExpressionAlignmentVisitor;
+import automath.inference.VariableAssignment;
 
 /*
  * Processor to see if one expression can become

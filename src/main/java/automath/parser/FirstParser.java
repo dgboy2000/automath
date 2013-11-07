@@ -2,13 +2,12 @@ package automath.parser;
 
 import automath.antlr.firstgrammar.*;
 import automath.type.*;
-import automath.util.KnowledgeCorpus;
-import automath.util.SimpleKnowledgeCorpus;
+import automath.inference.KnowledgeCorpus;
+import automath.inference.SimpleKnowledgeCorpus;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
 
-import javax.xml.stream.events.Characters;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
