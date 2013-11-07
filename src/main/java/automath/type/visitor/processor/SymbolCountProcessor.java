@@ -26,11 +26,12 @@ public class SymbolCountProcessor implements ExpressionVisitor.Processor {
         new ExpressionVisitor(processor).visit(expression);
         symbolCount += processor.getSymbolCount();
 
+        // TODO: move this logic to a new visitor, ExpressionAndAssumptionVisitor
         if (expression instanceof Predicate) {
             Predicate predicate = (Predicate) expression;
             int assumptionCount = predicate.getAssumptions().size();
             for (Predicate assumption : predicate.getAssumptions()) {
-                if (assumption.equals(predicate)) assumptionCount += symbolCount; // Avoid infinite recursion
+                if (ExpressionEqualityProcessor.equal(assumption, predicate)) assumptionCount += symbolCount; // Avoid infinite recursion
                 else assumptionCount += countSymbolsIn(assumption);
             }
             symbolCount += assumptionCount;

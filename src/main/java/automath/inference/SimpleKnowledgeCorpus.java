@@ -3,6 +3,7 @@ package automath.inference;
 import automath.type.Operator;
 import automath.type.Predicate;
 import automath.type.Theorem;
+import automath.type.visitor.processor.ExpressionEqualityProcessor;
 import automath.type.visitor.processor.ExpressionSimplificationProcessor;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,7 +16,33 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
     private final List<Predicate> facts = new ArrayList<Predicate>(); // Facilitates ordering
 
     // Facilitates fast lookup and stores back-tracking to recreate a proof
-    private final Map<Predicate, Inference> factToInference = new HashMap<Predicate, Inference>();
+    private final Map<MappablePredicate, Inference> factToInference = new HashMap<MappablePredicate, Inference>();
+
+    /**
+     * Overrides the equals method, allowing storage in a hashmap
+     */
+    private class MappablePredicate {
+        private final Predicate predicate;
+        public Predicate getPredicate() { return predicate; }
+
+        public MappablePredicate(Predicate predicate) { this.predicate = predicate; }
+
+        @Override
+        public boolean equals(Object otherObject) {
+            if (otherObject instanceof MappablePredicate) {
+                return ExpressionEqualityProcessor.equal(predicate, ((MappablePredicate) otherObject).getPredicate());
+            } else if (otherObject instanceof Predicate) {
+                return ExpressionEqualityProcessor.equal(predicate, (Predicate) otherObject);
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return predicate.hashCode();
+        }
+    }
 
     @Override
     public boolean addInferenceIfNew(Inference inference) {
@@ -30,9 +57,10 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
         result.setLabel(Integer.toString(size()+1));
 
         // TODO: this is also not new if we already knew this result but with fewer assumptions
-        if (factToInference.containsKey(result)) return false;
+        MappablePredicate mappableResult = new MappablePredicate(result);
+        if (factToInference.containsKey(mappableResult)) return false;
         facts.add(result);
-        factToInference.put(result, inference);
+        factToInference.put(mappableResult, inference);
         return true;
     }
 
@@ -53,10 +81,10 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
     @Override
     public Inference getInference(Predicate predicate) {
         // TODO: why is hash lookup failing? is something getting modified after insertion?
-//        return factToInference.get(predicate);
+//        return factToInference.get(new MappablePredicate(predicate));
 
         for (Inference inference : this.factToInference.values()) {
-            if (inference.result.equals(predicate)) return inference;
+            if (ExpressionEqualityProcessor.equal(inference.result, predicate)) return inference;
         }
 
         return null;
@@ -225,7 +253,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
         List<String> knowledgeStrings = new ArrayList<String>();
         for (int i=0; i<size(); ++i) {
             Predicate fact = facts.get(i);
-            knowledgeStrings.add(fact.getLabel()+": "+factToInference.get(fact).toString());
+            knowledgeStrings.add(fact.getLabel()+": "+factToInference.get(new MappablePredicate(fact)).toString());
         }
         return StringUtils.join(knowledgeStrings, "\n");
     }

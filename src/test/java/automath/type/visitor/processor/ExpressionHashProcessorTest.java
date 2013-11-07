@@ -1,7 +1,10 @@
 package automath.type.visitor.processor;
 
+import automath.BaseTest;
 import automath.parser.FirstParser;
 import automath.type.Expression;
+import automath.type.Predicate;
+import automath.type.PredicateVariable;
 import automath.type.visitor.processor.ExpressionHashProcessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,11 +13,9 @@ import org.junit.runners.JUnit4;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
-public class ExpressionHashProcessorTest {
+public class ExpressionHashProcessorTest extends BaseTest {
     @Test
     public void hashTest() {
-        FirstParser parser = new FirstParser();
-
         Expression expA = parser.parsePredicate("x=y");
         Expression expB = parser.parsePredicate("a=b");
         assertEquals(ExpressionHashProcessor.hash(expA), ExpressionHashProcessor.hash(expB));
@@ -27,5 +28,41 @@ public class ExpressionHashProcessorTest {
 
         Expression expE = parser.parseExpression("(x+y)*z");
         assertNotSame(ExpressionHashProcessor.hash(expD), ExpressionHashProcessor.hash(expE));
+    }
+
+    @Test
+    public void testParallelExpressions() {
+        Predicate cycle1 = generateCyclicAssumptions();
+        Predicate cycle2 = generateCyclicAssumptions();
+        assertEquals(ExpressionHashProcessor.hash(cycle1), ExpressionHashProcessor.hash(cycle2));
+    }
+
+    @Test
+    public void testDifferentAssumptions() {
+        Predicate cycle1 = generateCyclicAssumptions();
+        Predicate cycle2 = generateCyclicAssumptions();
+        cycle2.getAssumptions().clear();
+        cycle2.getAssumptions().add(cycle1);
+        assertFalse(ExpressionEqualityProcessor.equal(cycle1, cycle2));
+        assertFalse(ExpressionEqualityProcessor.equal(cycle2, cycle1));
+    }
+
+    @Test
+    public void testDifferentBindings() {
+        Predicate cycle1 = generateCyclicAssumptions();
+        Predicate cycle2 = generateCyclicAssumptions();
+        ((PredicateVariable) cycle2).bindTo(null);
+        assertFalse(ExpressionEqualityProcessor.equal(cycle1, cycle2));
+        assertFalse(ExpressionEqualityProcessor.equal(cycle2, cycle1));
+    }
+
+    private Predicate generateCyclicAssumptions() {
+        Predicate assumption1 = parser.parsePredicate("(A->B)&(B->C)").asAssumption();
+        PredicateVariable assumption2 = (PredicateVariable) parser.parseVariable("A");
+        assumption2.bindTo(assumption1);
+        assumption2.getAssumptions().add(assumption1);
+        assumption2.getAssumptions().add(assumption2);
+
+        return assumption2;
     }
 }

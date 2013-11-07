@@ -41,13 +41,8 @@ public class PredicateVariable extends Predicate implements Variable {
     public boolean equals(Object otherObject) {
         if (otherObject == null || !otherObject.getClass().equals(getClass())) return false;
         Variable otherVariable = (Variable) otherObject;
-        if (!getName().equals(otherVariable.getName()) || this.getType() != otherVariable.getType())
-            return false;
-        if (!this.isBound())
-            return true;
-        if (this.getBinding() == this && otherVariable.getBinding() == otherVariable)
-            return true;
-        return this.getBinding() == otherVariable.getBinding();
+        if (!isBound()) return !otherVariable.isBound();
+        return getName().equals(otherVariable.getName());
     }
 
     @Override

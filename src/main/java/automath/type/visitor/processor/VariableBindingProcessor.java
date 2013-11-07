@@ -13,25 +13,30 @@ import java.util.Set;
  */
 public class VariableBindingProcessor implements ExpressionVisitor.Processor {
     private Predicate predicateToBind;
-    private final Set<Predicate> predicatesToUnbind = new HashSet<Predicate>();
+    private final Set<Predicate> predicateToUnbindFrom = new HashSet<Predicate>();
 
-    public static VariableBindingProcessor bindingProcessor(Predicate predicateToBind) {
+    /**
+     * Create a visitor and run the processor to bind variables in the specified predicate
+     */
+    public static void bind(Predicate predicateToBind) {
         VariableBindingProcessor processor = new VariableBindingProcessor();
         processor.predicateToBind = predicateToBind;
-        return processor;
+        new ExpressionVisitor(processor).visit(predicateToBind);
     }
 
     public static VariableBindingProcessor unbindingProcessor(Predicate predicateToUnbind) {
         VariableBindingProcessor processor = new VariableBindingProcessor();
-        processor.predicatesToUnbind.add(predicateToUnbind);
+        processor.predicateToUnbindFrom.add(predicateToUnbind);
         return processor;
     }
+
+
 
     @Override
     public boolean process(Type type) {
         if (type instanceof Variable) {
             Variable variable = (Variable) type;
-            if (predicatesToUnbind.contains(variable.getBinding())) {
+            if (predicateToUnbindFrom.contains(variable.getBinding())) {
                 variable.bindTo(null);
             } else if (predicateToBind != null && !variable.isBound()) {
                 variable.bindTo(predicateToBind);

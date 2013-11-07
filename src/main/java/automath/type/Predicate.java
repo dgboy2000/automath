@@ -1,5 +1,6 @@
 package automath.type;
 
+import automath.type.visitor.processor.ExpressionEqualityProcessor;
 import automath.type.visitor.processor.ExpressionHashProcessor;
 import automath.type.visitor.ExpressionVisitor;
 import automath.type.visitor.processor.VariableBindingProcessor;
@@ -16,9 +17,10 @@ public class Predicate extends Expression {
 
     private final List<Predicate> assumptions = new ArrayList<Predicate>();
     public List<Predicate> getAssumptions() { return assumptions; }
+    public Predicate getAssumption(int ind) { return assumptions.get(ind); }
     public boolean containsAssumption(Predicate assumption) {
         for (Predicate containedAssumption : assumptions)
-            if (containedAssumption.equals(assumption)) return true;
+            if (ExpressionEqualityProcessor.equal(containedAssumption,assumption)) return true;
         return false;
     }
 
@@ -95,8 +97,7 @@ public class Predicate extends Expression {
         assumption.getAssumptions().addAll(this.getAssumptions());
         assumption.getAssumptions().add(assumption);
 
-        new ExpressionVisitor(VariableBindingProcessor.bindingProcessor(assumption)).visit(assumption);
-
+        VariableBindingProcessor.bind(assumption);
         return assumption;
     }
 
@@ -127,20 +128,6 @@ public class Predicate extends Expression {
                 (type instanceof Variable) &&
                 ((Variable) type).isTypeAssignableFrom(Predicate.TRUE)
         );
-    }
-
-    /**
-     * Two predicates are equal if the underlying expressions are equal and they
-     * depend on the same assumptions.
-     * @param object
-     * @return
-     */
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Predicate) || !super.equals(object)) return false;
-        if (this == object) return true;
-        Predicate predicate = (Predicate) object;
-        return getAssumptionLabelsWithoutSelf().equals(predicate.getAssumptionLabelsWithoutSelf());
     }
 
     private Set<String> getAssumptionLabelsWithoutSelf() {

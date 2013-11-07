@@ -5,6 +5,7 @@ import automath.type.Type;
 import automath.type.Variable;
 import automath.type.visitor.ExpressionAlignmentVisitor;
 import automath.inference.VariableAssignment;
+import automath.type.visitor.ExpressionEqualityVisitor;
 
 /*
  * Processor to see if one expression can become
@@ -14,6 +15,7 @@ public class VariableAssignmentProcessor implements ExpressionAlignmentVisitor.T
     private final VariableAssignment variableAssignment = new VariableAssignment();
     public VariableAssignment getVariableAssignment() { return variableAssignment; }
 
+    @Override
     public boolean process(Type type, Type otherType) {
         if (type instanceof Variable) return processVariable((Variable) type, otherType);
         if (type instanceof Expression) return processExpression((Expression) type, otherType);

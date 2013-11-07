@@ -6,6 +6,8 @@ import automath.inference.ProofStrategy;
 import automath.inference.SimpleKnowledgeCorpus;
 import automath.inference.SimpleProofStrategy;
 import automath.type.Predicate;
+import automath.type.PredicateVariable;
+import automath.type.visitor.processor.VariableBindingProcessor;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,6 +47,28 @@ public class SimpleProofStrategyTest extends BaseTest {
         axioms.addAxiomIfNew(parser.parsePredicate("f=g -> g=f"));
         ProofStrategy prover = new SimpleProofStrategy(goal, axioms);
 
+        assertTrue(prover.execute());
+    }
+
+    @Test
+    @Ignore
+    public void proofCompletionTest() {
+        corpus.addAxiomIfNew(parser.parseTheorem("A&B -> A"));
+        corpus.addAxiomIfNew(parser.parseTheorem("A&B -> B"));
+        corpus.addAxiomIfNew(parser.parseTheorem("(A->B)&A -> B"));
+
+        // Add assumptions as axioms
+        Predicate assumption1 = parser.parsePredicate("(A->B)&(B->C)").asAssumption();
+        PredicateVariable assumption2 = (PredicateVariable) parser.parseVariable("A");
+        assumption2.bindTo(assumption1);
+        assumption2.getAssumptions().add(assumption1);
+        assumption2.getAssumptions().add(assumption2);
+        corpus.addAxiomIfNew(assumption1);
+        corpus.addAxiomIfNew(assumption2);
+
+        Predicate goal = parser.parsePredicate("(A->B)&(B->C) -> (A->C)");
+
+        ProofStrategy prover = new SimpleProofStrategy(goal, corpus);
         assertTrue(prover.execute());
     }
 

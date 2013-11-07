@@ -78,11 +78,7 @@ public class Proof {
 
         for (Predicate axiom : this.axioms) {
             ++stepCounter;
-            try {
-                knowledgeStrings.add(stepCounter+": "+knowledgeCorpus.getInference(axiom).toString());
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+            knowledgeStrings.add(stepCounter+": "+knowledgeCorpus.getInference(axiom).toString());
         }
 
         for (Inference inference : this.steps) {

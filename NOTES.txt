@@ -1,0 +1,98 @@
+To test:
+we don't think we've completed a goal if our predicate depends on assumptions
+
+Can determine whether parentheses are needed in expressions by visiting the expression tree, propagating the operator precedence down, and grouping with parentheses any time there is an operation that is lower precedence than the level above. Inside the parentheses, the precedence is reset to the just-visited expression
+"Suppose" means generate assumption during parsing, "therefore" labels a reduction
+
+
+
+Want to be able to draw on multiple assertions at a time, but will consider all the variables in the assumptions as bound, so won't work. Need an assumption of a free variable to be bound or else will match anything. Maybe nested assumptions solve this? Assumptions can depend on other assumptions and be distinct states of knowledge.
+
+Can make conflicting assumptions. Need to keep track of whether we've derived a contradiction (False)
+
+Need a proof to imagine potential variable substitutions.
+
+Issues: can't assign predvar to pred, messes up double negation
+Turn an expression into a 2-way tree where BaseTypes know their parents. Operators won't know their parents but that's ok bc they'll have sibling BaseTypes who do.
+
+Prove: A & B -> B & A
+*1. Assume A & B
+*2. A(2)
+*3. B(2)
+4. Axiom A | ~A
+5. Axiom ~A | B -> (A -> B)
+6. Axiom A|B -> B|A
+*7. ~A | A (4, 6)
+*8. A -> A (5, 7)
+9. A&B (1, 8)
+10. A&B -> A&B (9 Reduced by 1)
+11. B&A (2, 3, 10)
+12. Goal (11 Reduced by 1)
+
+Quantifier/binding-aware:
+Axioms
+!A.A|~A
+!A.!B.~A | B -> (A -> B)
+!A.!B.A|B -> B|A
+Goal: !A.!B.A&B->B&A
+!A.~A|A
+!A.A->A
+Assume(1): A,B st A&B
+    A(1).A
+    B(1).B
+    A(1),B(1).A&B->A&B
+    
+    
+Axioms:
+A&B -> A
+A&B -> B
+A&(A->B)->B
+
+Goal: (A->B) & (B->C) -> (A->C)
+
+Assume (A->B) & (B->C) 7,15
+(A->B) 3,11
+(B->C) 3,11
+Assume A 1,11
+B 1,11
+C 1,11
+Reduce: A -> C 3,11
+Reduce: (A->B) & (B->C) -> (A->C) 11    
+
+
+Working backwards from goal:
+Goal: (A->B) & (B->C) -> (A->C) Based on assumption so assume
+Assuming (A->B) & (B->C), show A->C. store the inference that goes forward
+Assuming (A->B) & (B->C) and A, show C. A is bound to the previous assumption.
+Preference for applying the original     
+
+
+Prover things to try:
+-make a goal tree that uses theorems to infer backwards. backwards and forwards reasoning look in each other's hashes to see if things match.
+-interactive prover where you can say which theorems to use, which statements to apply to
+-proof checker where a proof has a formal language
+-start parsing mathematical proofs
+-more heuristics choosing good proof steps
+-start learning what makes a good inference
+-try depth-oriented prover with complexity limit
+-simplification
+
+Start making the prover modular.
+-candidate generator: based on current knowledge corpus, generate a candidate next inference to perform
+-inference evaluator: how promising is this inference?
+
+
+Goal tree, think of as upside down inference tree. Only need to get to a branch and done.
+
+
+
+
+
+
+
+
+
+
+
+
+

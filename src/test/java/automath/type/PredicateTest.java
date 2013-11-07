@@ -2,6 +2,7 @@ package automath.type;
 
 import automath.BaseTest;
 import automath.inference.Inference;
+import automath.type.visitor.processor.ExpressionEqualityProcessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,13 +49,13 @@ public class PredicateTest extends BaseTest {
 
     @Test
     public void equalsTest() {
-        assertTrue(equation.equals(equation));
-        assertTrue(equation.equals(equationCopy));
-        assertTrue(flippedEquation.equals(flippedEquation));
-        assertFalse(equation.equals(numberEquation));
-        assertFalse(flippedEquation.equals(equation));
-        assertFalse(equation.equals(flippedEquation));
-        assertFalse(numberEquation.equals(equation));
+        assertTrue(ExpressionEqualityProcessor.equal(equation, equation));
+        assertTrue(ExpressionEqualityProcessor.equal(equation, equationCopy));
+        assertTrue(ExpressionEqualityProcessor.equal(flippedEquation, flippedEquation));
+        assertFalse(ExpressionEqualityProcessor.equal(equation, numberEquation));
+        assertFalse(ExpressionEqualityProcessor.equal(flippedEquation, equation));
+        assertFalse(ExpressionEqualityProcessor.equal(equation, flippedEquation));
+        assertFalse(ExpressionEqualityProcessor.equal(numberEquation, equation));
     }
 
     @Test
@@ -62,6 +63,6 @@ public class PredicateTest extends BaseTest {
         Predicate assumption1 = Inference.assumption(parser.parsePredicate("A")).result;
         Predicate assumption2 = Inference.assumption(parser.parsePredicate("A")).result;
         assertEquals(assumption1.hashCode(), assumption2.hashCode());
-        assertEquals(assumption1, assumption2);
+        assertTrue(ExpressionEqualityProcessor.equal(assumption1, assumption2));
     }
 }
