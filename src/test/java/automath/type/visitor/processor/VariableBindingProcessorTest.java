@@ -16,7 +16,6 @@ import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class VariableBindingProcessorTest extends BaseTest {
-    @Ignore
     @Test
     public void unbindingTest() {
         corpus = new SimpleKnowledgeCorpus();

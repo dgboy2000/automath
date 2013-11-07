@@ -27,9 +27,7 @@ public class PredicateVariableTest extends BaseTest {
     }
 
     @Test
-    @Ignore
     public void testBoundInPredicate() {
-        // TODO: make a notion of equals that compares cyclic graphs
         Predicate assumption1 = Inference.assumption(parser.parsePredicate("(A->B)&(B->C)")).result;
         Predicate assumption2 = Inference.assumption(parser.parsePredicate("(A->B)&(B->C)")).result;
         assertEquals(assumption1.hashCode(), assumption2.hashCode());
