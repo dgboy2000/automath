@@ -6,6 +6,7 @@ import automath.type.visitor.ExpressionVisitor;
 import automath.type.visitor.processor.AntecedentExtractionProcessor;
 import automath.type.visitor.processor.SymbolCountProcessor;
 import automath.util.AutomathLogger;
+import automath.util.Mappable;
 
 import java.util.*;
 
@@ -15,11 +16,11 @@ import java.util.*;
 public class PriorityQueueProofStrategy extends PriorityQueue<Inference> implements ProofStrategy {
     private static final int MAX_CORPUS_SIZE = 200;
     private static final int RECOMPUTE_INFERENCES_PERIOD = 20;
-    private static final int MAX_PREDICATE_COMPLEXITY = 15;
+    private static final int MAX_PREDICATE_COMPLEXITY = 20;
 
     private final Predicate goal; // The result to prove
     private final KnowledgeCorpus currentKnowledge; // The current set of known facts
-    private final Set<Predicate> seenResults = new HashSet<Predicate>(); // All predicates considered
+    private final Set<Mappable<Predicate>> seenResults = new HashSet<Mappable<Predicate>>(); // All predicates considered
     private int numNewInferences = 0;
 
     public final static Comparator<Inference> SYMBOL_COUNTER = new Comparator<Inference>() {
@@ -62,12 +63,12 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
         }
         visitor.visit(goal);
 
-        for (Predicate antecedent : processor.getAntecedents()) {
-            candidateAssumptions.add(Inference.assumption(antecedent));
+        for (Mappable<Predicate> antecedent : processor.getAntecedents()) {
+            candidateAssumptions.add(Inference.assumption(antecedent.getRawObject()));
 
             // Allow assumptions that compound with other assumptions
             for (Predicate assumptionToBuildOn : currentAssumptions) {
-                candidateAssumptions.add(Inference.assumption(antecedent, assumptionToBuildOn));
+                candidateAssumptions.add(Inference.assumption(antecedent.getRawObject(), assumptionToBuildOn));
             }
         }
 
@@ -112,7 +113,7 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
                     || SymbolCountProcessor.countSymbolsIn(candidate.result) > MAX_PREDICATE_COMPLEXITY) {
                continue;
             }
-            this.seenResults.add(candidate.result);
+            this.seenResults.add(new Mappable<Predicate>(candidate.result));
             this.add(candidate);
         }
 

@@ -40,7 +40,9 @@ public class Theorem extends Predicate {
                 theoremPredicate.getChild(0) instanceof Predicate &&
                 theoremPredicate.getChild(1) == Operator.IMPLIES &&
                 theoremPredicate.getChild(2) instanceof Predicate) {
+            // TODO: need to clone the predicate, and cloning needs to be cycle safe
             this.getChildren().addAll(theoremPredicate.getChildren());
+            this.getAssumptions().addAll(theoremPredicate.getAssumptions());
             this.antecedent = (Predicate) getChild(0);
             this.consequent = (Predicate) getChild(2);
         }
@@ -58,7 +60,8 @@ public class Theorem extends Predicate {
         return antecedent.getVariableAssignmentTo(predicate).applyTo(consequent);
     }
     public Predicate apply(VariableAssignment variableAssignment) {
-        return variableAssignment.applyTo(consequent);
+        try {return variableAssignment.applyTo(consequent);}
+        catch (Exception e) { return variableAssignment.applyTo(consequent); }
     }
 
     @Override

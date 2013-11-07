@@ -4,6 +4,7 @@ import automath.type.visitor.ExpressionAlignmentVisitor;
 import automath.type.visitor.processor.ExpressionHashProcessor;
 import automath.inference.VariableAssignment;
 import automath.type.visitor.processor.VariableAssignmentProcessor;
+import automath.util.Mappable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ public class Expression extends BaseType {
 
     @Override
     public boolean equals(Object otherObject) {
+        if (otherObject instanceof Mappable) return otherObject.equals(this);
         return otherObject != null && this.getClass() == otherObject.getClass();
     }
 

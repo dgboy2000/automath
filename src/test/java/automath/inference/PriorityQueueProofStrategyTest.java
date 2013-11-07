@@ -41,7 +41,6 @@ public class PriorityQueueProofStrategyTest extends BaseTest {
     }
 
     @Test
-    @Ignore
     public void proofCompletionTest() {
         corpus.addAxiomIfNew(parser.parseTheorem("A&B -> A"));
         corpus.addAxiomIfNew(parser.parseTheorem("A&B -> B"));

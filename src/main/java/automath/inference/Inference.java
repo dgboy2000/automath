@@ -2,6 +2,7 @@ package automath.inference;
 
 import automath.type.Predicate;
 import automath.type.Theorem;
+import automath.util.Mappable;
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,7 +13,7 @@ import java.util.Set;
  * Represents a logical inference
  */
 public class Inference {
-    public final Set<Predicate> precedents = new HashSet<Predicate>(); // The previous facts we reasoned from
+    public final Set<Mappable<Predicate>> precedents = new HashSet<Mappable<Predicate>>(); // The previous facts we reasoned from
     public VariableAssignment variableAssignment; // The variable assignment used in this inference
     public Theorem theorem; // The theorem we applied
     public Predicate result; // The result of inference
@@ -44,7 +45,7 @@ public class Inference {
     public static Inference assumption(Predicate toAssume, Predicate context) {
         Inference inference = Inference.assumption(toAssume);
         inference.result.getAssumptions().addAll(context.getAssumptions());
-        inference.precedents.add(context);
+        inference.precedents.add(new Mappable<Predicate>(context));
 
         return inference;
     }
@@ -54,8 +55,8 @@ public class Inference {
         inference.variableAssignment = new VariableAssignment();
         inference.result = toReduce.getReductionBy(assumption);
         inference.theorem = Theorem.REDUCTION;
-        inference.precedents.add(assumption);
-        inference.precedents.add(toReduce);
+        inference.precedents.add(new Mappable<Predicate>(assumption));
+        inference.precedents.add(new Mappable<Predicate>(toReduce));
 
         return inference;
     }
@@ -68,8 +69,8 @@ public class Inference {
         if (precedents.size() > 0) {
             inferenceStringBuilder.append("(");
             Set<String> precendentLabels = new OrderedHashSet<String>();
-            for (Predicate precedent : precedents) {
-                precendentLabels.add(precedent.getLabel());
+            for (Mappable<Predicate> precedent : precedents) {
+                precendentLabels.add(precedent.getRawObject().getLabel());
             }
             for (Predicate assumption : result.getAssumptions()) {
                 precendentLabels.add(assumption.getLabel());

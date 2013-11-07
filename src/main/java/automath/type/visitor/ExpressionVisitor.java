@@ -23,8 +23,7 @@ public class ExpressionVisitor extends BaseTypeVisitor {
 
     public boolean visitExpression(Expression expression) {
         for (Type child : expression.getChildren()) {
-            if (expression == child)
-                throw new RuntimeException();
+            if (expression == child) throw new RuntimeException();
             if (!visit(child)) return false;
         }
 

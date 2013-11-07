@@ -102,7 +102,7 @@ public class Predicate extends Expression {
     }
 
     /**
-     * Hash a predicate by it's expression and the hashes of it's assumptions
+     * Hash a predicate by its expression and the hashes of its assumptions
      * @return
      */
     @Override

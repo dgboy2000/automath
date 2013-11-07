@@ -74,12 +74,12 @@ public class SimpleProofStrategy implements ProofStrategy {
 //        }
         visitor.visit(goal);
 
-        for (Predicate antecedent : processor.getAntecedents()) {
-            candidateAssumptions.add(Inference.assumption(antecedent));
+        for (Mappable<Predicate> antecedent : processor.getAntecedents()) {
+            candidateAssumptions.add(Inference.assumption(antecedent.getRawObject()));
 
             // Allow assumptions that compound with other assumptions
             for (Predicate assumptionToBuildOn : currentAssumptions) {
-                candidateAssumptions.add(Inference.assumption(antecedent, assumptionToBuildOn));
+                candidateAssumptions.add(Inference.assumption(antecedent.getRawObject(), assumptionToBuildOn));
             }
         }
 

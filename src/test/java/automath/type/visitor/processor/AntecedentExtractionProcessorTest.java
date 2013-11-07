@@ -4,6 +4,7 @@ import automath.BaseTest;
 import automath.type.Predicate;
 import automath.type.visitor.ExpressionVisitor;
 import automath.type.visitor.processor.AntecedentExtractionProcessor;
+import automath.util.Mappable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -20,8 +21,8 @@ public class AntecedentExtractionProcessorTest extends BaseTest {
         ExpressionVisitor visitor = new ExpressionVisitor(processor);
         visitor.visit(predicate);
 
-        assertThat(processor.getAntecedents(), hasItem(parser.parsePredicate("A")));
-        assertThat(processor.getAntecedents(), hasItem(parser.parsePredicate("B")));
-        assertThat(processor.getAntecedents(), hasItem(parser.parsePredicate("(A->B) & (B->C)")));
+        assertHasMappable(processor.getAntecedents(), parser.parsePredicate("A"));
+        assertHasMappable(processor.getAntecedents(), parser.parsePredicate("B"));
+        assertHasMappable(processor.getAntecedents(), parser.parsePredicate("(A->B) & (B->C)"));
     }
 }

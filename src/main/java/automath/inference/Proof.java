@@ -4,6 +4,7 @@ import automath.inference.Inference;
 import automath.inference.KnowledgeCorpus;
 import automath.type.Predicate;
 import automath.type.Theorem;
+import automath.util.Mappable;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -63,11 +64,11 @@ public class Proof {
             return;
         }
 
-        for (Predicate predecessor : inference.precedents) {
-            String label = predecessor.getLabel();
+        for (Mappable<Predicate> predecessor : inference.precedents) {
+            String label = predecessor.getRawObject().getLabel();
             if (this.includedPredicates.contains(label)) continue;
             this.includedPredicates.add(label);
-            visitInference(knowledgeCorpus.getInference(predecessor));
+            visitInference(knowledgeCorpus.getInference(predecessor.getRawObject()));
         }
         this.steps.add(inference);
     }

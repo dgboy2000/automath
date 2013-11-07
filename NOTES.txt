@@ -83,8 +83,14 @@ Start making the prover modular.
 
 
 Goal tree, think of as upside down inference tree. Only need to get to a branch and done.
+How to know whether children are "or" or "and"? A child has an inference object
 
+How did we get another A&B->A? See what the inference is.
+Are we causing issues by converting Predicates to theorems in the knowledge corpus after the fact?
 
+Fix remaining issues after converting from Set/Map<Predicate to Set/Map<Mappable
+
+May need to create ExpressionAssumptionBindingVisitor and connect it to the ExpressionHashProcessor
 
 
 

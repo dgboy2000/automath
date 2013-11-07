@@ -123,7 +123,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
             Inference inference = new Inference();
             inference.variableAssignment = antecedent.getVariableAssignmentTo(fact);
             if (null != inference.variableAssignment) {
-                inference.precedents.add(fact);
+                inference.precedents.add(new Mappable<Predicate>(fact));
                 legalInferences.add(inference);
             }
 //            new AutomathLogger() {@Override public String fine() {return "Legal inference: ";}};
@@ -190,8 +190,8 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
 
             // We are assuming everything that was assumed by the precendents and the theorem
             inference.result.getAssumptions().addAll(theorem.getAssumptions());
-            for (Predicate precedent : inference.precedents) {
-                inference.result.getAssumptions().addAll(precedent.getAssumptions());
+            for (Mappable<Predicate> precedent : inference.precedents) {
+                inference.result.getAssumptions().addAll(precedent.getRawObject().getAssumptions());
             }
         }
     }

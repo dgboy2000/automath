@@ -4,6 +4,7 @@ import automath.type.Predicate;
 import automath.type.Type;
 import automath.type.Variable;
 import automath.type.visitor.ExpressionVisitor;
+import automath.util.Mappable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +14,7 @@ import java.util.Set;
  */
 public class VariableBindingProcessor implements ExpressionVisitor.Processor {
     private Predicate predicateToBind;
-    private final Set<Predicate> predicateToUnbindFrom = new HashSet<Predicate>();
+    private final Set<Mappable<Predicate>> predicatesToUnbindFrom = new HashSet<Mappable<Predicate>>();
 
     /**
      * Create a visitor and run the processor to bind variables in the specified predicate
@@ -26,7 +27,7 @@ public class VariableBindingProcessor implements ExpressionVisitor.Processor {
 
     public static VariableBindingProcessor unbindingProcessor(Predicate predicateToUnbind) {
         VariableBindingProcessor processor = new VariableBindingProcessor();
-        processor.predicateToUnbindFrom.add(predicateToUnbind);
+        processor.predicatesToUnbindFrom.add(new Mappable<Predicate>(predicateToUnbind));
         return processor;
     }
 
@@ -36,7 +37,7 @@ public class VariableBindingProcessor implements ExpressionVisitor.Processor {
     public boolean process(Type type) {
         if (type instanceof Variable) {
             Variable variable = (Variable) type;
-            if (predicateToUnbindFrom.contains(variable.getBinding())) {
+            if (predicatesToUnbindFrom.contains(variable.getBinding())) {
                 variable.bindTo(null);
             } else if (predicateToBind != null && !variable.isBound()) {
                 variable.bindTo(predicateToBind);
