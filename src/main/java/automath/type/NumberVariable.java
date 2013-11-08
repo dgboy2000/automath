@@ -36,7 +36,7 @@ public class NumberVariable extends BaseType implements Variable {
     @Override
     public boolean equals(Object otherObject) {
         if (otherObject == null || otherObject.getClass() != getClass()) return false;
-        Variable otherVariable = (Variable) otherObject;
+        NumberVariable otherVariable = (NumberVariable) otherObject;
         if (!isBound()) return !otherVariable.isBound();
         return getName().equals(otherVariable.getName());
     }

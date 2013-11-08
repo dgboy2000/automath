@@ -40,12 +40,12 @@ public class TheoremTest extends BaseTest {
     @Test
     public void testFromPredicate() {
         Predicate predicate = parser.parsePredicate("x=y -> y=x");
-        predicate.getAssumptions().add(predicate);
+        predicate.addAssumption(predicate);
         Theorem theorem = new Theorem(predicate);
         assertEquals(theorem.getAntecedent().toString(), "x=y");
         assertEquals(theorem.getConsequent().toString(), "y=x");
         assertEquals(theorem.getAssumptions().size(), predicate.getAssumptions().size());
-        assertEquals(theorem.getAssumption(0), predicate.getAssumption(0));
+        assertEquals(theorem.getAssumptions(), predicate.getAssumptions());
 
         boolean isException = false;
         try { new Theorem(parser.parsePredicate("x=x & y=y")); }

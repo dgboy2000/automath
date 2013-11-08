@@ -17,13 +17,13 @@ public class ExpressionSimplificationProcessorTest extends BaseTest {
         Predicate dummyAssumption = parser.parsePredicate("x=4");
         dummyAssumption.setLabel("label");
 
-        doubleNeg.getAssumptions().add(dummyAssumption);
+        doubleNeg.addAssumption(dummyAssumption);
         ExpressionSimplificationProcessor.process(doubleNeg);
         Predicate expected = parser.parsePredicate("~B");
-        expected.getAssumptions().add(dummyAssumption);
+        expected.addAssumption(dummyAssumption);
         assertEquals(doubleNeg, expected);
         assertEquals(doubleNeg.getAssumptions().size(), 1);
-        assertEquals(doubleNeg.getAssumptions().get(0), dummyAssumption);
+        assertHasMappable(doubleNeg.getAssumptions(), dummyAssumption);
 
         doubleNeg = parser.parsePredicate("~~~(~~A & ~~B)");
         ExpressionSimplificationProcessor.process(doubleNeg);

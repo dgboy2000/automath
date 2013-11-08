@@ -5,6 +5,7 @@ import automath.type.Predicate;
 import automath.type.Type;
 import automath.type.Variable;
 import automath.type.visitor.ExpressionVisitor;
+import automath.util.Mappable;
 
 /**
  * Count the number of terminal symbols in an expression
@@ -30,9 +31,9 @@ public class SymbolCountProcessor implements ExpressionVisitor.Processor {
         if (expression instanceof Predicate) {
             Predicate predicate = (Predicate) expression;
             int assumptionCount = predicate.getAssumptions().size();
-            for (Predicate assumption : predicate.getAssumptions()) {
-                if (ExpressionEqualityProcessor.equal(assumption, predicate)) assumptionCount += symbolCount; // Avoid infinite recursion
-                else assumptionCount += countSymbolsIn(assumption);
+            for (Mappable<Predicate> assumption : predicate.getAssumptions()) {
+                if (ExpressionEqualityProcessor.equal(assumption.getRawObject(), predicate)) assumptionCount += symbolCount; // Avoid infinite recursion
+                else assumptionCount += countSymbolsIn(assumption.getRawObject());
             }
             symbolCount += assumptionCount;
         }

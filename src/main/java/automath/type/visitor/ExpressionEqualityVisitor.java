@@ -97,8 +97,10 @@ public class ExpressionEqualityVisitor extends BaseTypeVisitor {
     }
 
     private boolean visitAssumptions(Predicate predicate, Predicate otherPredicate) {
+        // TODO: this is n^2, which is only ok for few assumptions. Make Mappable comparable and iterate
         int numAssumptions = predicate.getAssumptions().size();
         if (numAssumptions != otherPredicate.getAssumptions().size()) return false;
+
 
         for (int i=0; i<numAssumptions; ++i) {
             if (!visit(predicate.getAssumption(i), otherPredicate.getAssumption(i))) {

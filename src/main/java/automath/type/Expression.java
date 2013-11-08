@@ -38,7 +38,9 @@ public class Expression extends BaseType {
     @Override
     public boolean equals(Object otherObject) {
         if (otherObject instanceof Mappable) return otherObject.equals(this);
-        return otherObject != null && this.getClass() == otherObject.getClass();
+        if (otherObject == null || this.getClass() != otherObject.getClass()) return false;
+        Expression otherExpression = (Expression) otherObject;
+        return this.getChildren().size() == otherExpression.getChildren().size();
     }
 
     @Override

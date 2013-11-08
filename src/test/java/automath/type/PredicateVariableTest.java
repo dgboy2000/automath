@@ -15,11 +15,11 @@ public class PredicateVariableTest extends BaseTest {
     @Test
     public void testAssumptionEquals() {
         PredicateVariable assumption1 = (PredicateVariable) parser.parseVariable("A");
-        assumption1.getAssumptions().add(assumption1);
+        assumption1.addAssumption(assumption1);
         assumption1.bindTo(assumption1);
 
         PredicateVariable assumption2 = (PredicateVariable) parser.parseVariable("A");
-        assumption2.getAssumptions().add(assumption2);
+        assumption2.addAssumption(assumption2);
         assumption2.bindTo(assumption2);
 
         assertEquals(assumption1.hashCode(), assumption2.hashCode());

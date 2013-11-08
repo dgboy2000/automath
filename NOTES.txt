@@ -92,6 +92,9 @@ Fix remaining issues after converting from Set/Map<Predicate to Set/Map<Mappable
 
 May need to create ExpressionAssumptionBindingVisitor and connect it to the ExpressionHashProcessor
 
+TODO: either make equals independent of the order of assumptions or make assumptions happen in a meaningful order
+TODO: modify the expression equals visitor to put the checks for number of children/assumptions/binding or not in the processor? Might facilitate comparisons
+
 
 
 

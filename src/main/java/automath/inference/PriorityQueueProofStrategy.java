@@ -16,7 +16,7 @@ import java.util.*;
 public class PriorityQueueProofStrategy extends PriorityQueue<Inference> implements ProofStrategy {
     private static final int MAX_CORPUS_SIZE = 200;
     private static final int RECOMPUTE_INFERENCES_PERIOD = 20;
-    private static final int MAX_PREDICATE_COMPLEXITY = 20;
+    private static final int MAX_PREDICATE_COMPLEXITY = 15;
 
     private final Predicate goal; // The result to prove
     private final KnowledgeCorpus currentKnowledge; // The current set of known facts

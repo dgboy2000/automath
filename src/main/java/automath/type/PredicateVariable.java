@@ -40,7 +40,8 @@ public class PredicateVariable extends Predicate implements Variable {
     @Override
     public boolean equals(Object otherObject) {
         if (otherObject == null || !otherObject.getClass().equals(getClass())) return false;
-        Variable otherVariable = (Variable) otherObject;
+        PredicateVariable otherVariable = (PredicateVariable) otherObject;
+        if (getAssumptions().size() != otherVariable.getAssumptions().size()) return false;
         if (!isBound()) return !otherVariable.isBound();
         return getName().equals(otherVariable.getName());
     }

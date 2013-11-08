@@ -61,8 +61,8 @@ public class SimpleProofStrategyTest extends BaseTest {
         Predicate assumption1 = parser.parsePredicate("(A->B)&(B->C)").asAssumption();
         PredicateVariable assumption2 = (PredicateVariable) parser.parseVariable("A");
         assumption2.bindTo(assumption1);
-        assumption2.getAssumptions().add(assumption1);
-        assumption2.getAssumptions().add(assumption2);
+        assumption2.addAssumption(assumption1);
+        assumption2.addAssumption(assumption2);
         corpus.addAxiomIfNew(assumption1);
         corpus.addAxiomIfNew(assumption2);
 

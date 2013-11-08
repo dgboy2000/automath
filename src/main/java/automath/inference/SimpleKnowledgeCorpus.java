@@ -203,8 +203,8 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
     private List<Inference> getLegalReductions() {
         List<Inference> reductions = new ArrayList<Inference>();
         for (Inference prevInference : factToInference.values()) {
-            for (Predicate assumption : prevInference.result.getAssumptions()) {
-                reductions.add(Inference.reduction(prevInference.result, assumption));
+            for (Mappable<Predicate> assumption : prevInference.result.getAssumptions()) {
+                reductions.add(Inference.reduction(prevInference.result, assumption.getRawObject()));
             }
         }
         return reductions;

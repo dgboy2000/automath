@@ -72,8 +72,8 @@ public class Inference {
             for (Mappable<Predicate> precedent : precedents) {
                 precendentLabels.add(precedent.getRawObject().getLabel());
             }
-            for (Predicate assumption : result.getAssumptions()) {
-                precendentLabels.add(assumption.getLabel());
+            for (Mappable<Predicate> assumption : result.getAssumptions()) {
+                precendentLabels.add(assumption.getRawObject().getLabel());
             }
             inferenceStringBuilder.append(StringUtils.join(precendentLabels, ","));
             inferenceStringBuilder.append(")");

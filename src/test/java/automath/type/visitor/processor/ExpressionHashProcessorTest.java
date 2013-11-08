@@ -42,7 +42,7 @@ public class ExpressionHashProcessorTest extends BaseTest {
         Predicate cycle1 = generateCyclicAssumptions();
         Predicate cycle2 = generateCyclicAssumptions();
         cycle2.getAssumptions().clear();
-        cycle2.getAssumptions().add(cycle1);
+        cycle2.addAssumption(cycle1);
         assertFalse(ExpressionEqualityProcessor.equal(cycle1, cycle2));
         assertFalse(ExpressionEqualityProcessor.equal(cycle2, cycle1));
     }
@@ -60,8 +60,8 @@ public class ExpressionHashProcessorTest extends BaseTest {
         Predicate assumption1 = parser.parsePredicate("(A->B)&(B->C)").asAssumption();
         PredicateVariable assumption2 = (PredicateVariable) parser.parseVariable("A");
         assumption2.bindTo(assumption1);
-        assumption2.getAssumptions().add(assumption1);
-        assumption2.getAssumptions().add(assumption2);
+        assumption2.addAssumption(assumption1);
+        assumption2.addAssumption(assumption2);
 
         return assumption2;
     }

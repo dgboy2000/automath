@@ -4,6 +4,7 @@ import automath.type.visitor.processor.ExpressionEqualityProcessor;
 import automath.type.visitor.processor.ExpressionHashProcessor;
 import automath.type.visitor.ExpressionVisitor;
 import automath.type.visitor.processor.VariableBindingProcessor;
+import automath.util.Mappable;
 
 import java.util.*;
 
@@ -15,14 +16,12 @@ public class Predicate extends Expression {
     public String getLabel() { return label; }
     public void setLabel(String value) { this.label = value; }
 
-    private final List<Predicate> assumptions = new ArrayList<Predicate>();
-    public List<Predicate> getAssumptions() { return assumptions; }
-    public Predicate getAssumption(int ind) { return assumptions.get(ind); }
-    public boolean containsAssumption(Predicate assumption) {
-        for (Predicate containedAssumption : assumptions)
-            if (ExpressionEqualityProcessor.equal(containedAssumption,assumption)) return true;
-        return false;
-    }
+    // TODO: need to implement more stuff to make Mappable navigable?
+    private final Set<Mappable<Predicate>> assumptions = new HashSet<Mappable<Predicate>>();
+    public Set<Mappable<Predicate>> getAssumptions() { return assumptions; }
+    public void addAssumption(Predicate assumption) { assumptions.add(new Mappable<Predicate>(assumption)); }
+    public void addAssumption(Mappable<Predicate> assumption) { assumptions.add(assumption); }
+    public boolean containsAssumption(Predicate assumption) { return assumptions.contains(assumption); }
 
     public static final Predicate TRUE = new Predicate() {
         @Override
@@ -95,7 +94,7 @@ public class Predicate extends Expression {
     public Predicate asAssumption() {
         Predicate assumption = (Predicate) this.clone();
         assumption.getAssumptions().addAll(this.getAssumptions());
-        assumption.getAssumptions().add(assumption);
+        assumption.addAssumption(new Mappable<Predicate>(assumption));
 
         VariableBindingProcessor.bind(assumption);
         return assumption;
@@ -108,8 +107,8 @@ public class Predicate extends Expression {
     @Override
     public int hashCode() {
         int code = ExpressionHashProcessor.hash(this);
-        for (Predicate assumption : this.assumptions) {
-            if (assumption == this) continue; // Avoid infinite recursion
+        for (Mappable<Predicate> assumption : this.assumptions) {
+            if (assumption.getRawObject() == this) continue; // Avoid infinite recursion
             int assumptionCode = assumption.hashCode();
             code += assumptionCode * assumptionCode * assumptionCode;
         }
@@ -132,9 +131,9 @@ public class Predicate extends Expression {
 
     private Set<String> getAssumptionLabelsWithoutSelf() {
         Set<String> assumptionLabels = new HashSet<String>();
-        for (Predicate assumption : getAssumptions()) {
-            if (this == assumption) continue;
-            String label = assumption.getLabel();
+        for (Mappable<Predicate> assumption : getAssumptions()) {
+            if (this == assumption.getRawObject()) continue;
+            String label = assumption.getRawObject().getLabel();
 
             // TODO: labels are a hack to avoid cyclic assumption graphs. Find better method
             if (label == null)
