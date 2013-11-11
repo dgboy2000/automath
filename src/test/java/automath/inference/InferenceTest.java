@@ -28,6 +28,5 @@ public class InferenceTest extends BaseTest {
         Inference inference = corpus.getLegalInferences(theorem).get(0);
         assertThat(inference.toString(), containsString("4=2+2"));
         assertThat(inference.toString(), containsString(theorem.getName()));
-        assertThat(inference.toString(), containsString("1"));
     }
 }

@@ -52,7 +52,7 @@ public class Proof {
         Predicate fact;
         for (int i=0; i<knowledgeCorpus.size(); ++i) {
             fact = knowledgeCorpus.get(i);
-            if (fact.isAssignableFrom(goal)) {
+            if (fact.isAssignableFrom(goal) & goal.getAssumptions().containsAll(fact.getAssumptions())) {
                 visitInference(knowledgeCorpus.getInference(fact));
             }
         }
@@ -64,11 +64,17 @@ public class Proof {
             return;
         }
 
-        for (Mappable<Predicate> predecessor : inference.precedents) {
-            String label = predecessor.getRawObject().getLabel();
+        for (Mappable<Predicate> precedent : inference.precedents) {
+            String label = precedent.getRawObject().getLabel();
             if (this.includedPredicates.contains(label)) continue;
             this.includedPredicates.add(label);
-            visitInference(knowledgeCorpus.getInference(predecessor.getRawObject()));
+            visitInference(knowledgeCorpus.getInference(precedent.getRawObject()));
+        }
+
+        String label = inference.theorem.getLabel();
+        if (label != null && !this.includedPredicates.contains(label)) {
+            this.includedPredicates.add(label);
+            visitInference(knowledgeCorpus.getInference(inference.theorem));
         }
         this.steps.add(inference);
     }

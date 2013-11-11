@@ -31,7 +31,7 @@ public class ExpressionVisitor extends BaseTypeVisitor {
     }
 
     public boolean visit(final Type type) {
-        new AutomathLogger() { @Override public String fine() { return "ExpressionVisitor at: "+type.toString(); }};
+        new AutomathLogger() { @Override public String finest() { return "ExpressionVisitor at: "+type.toString(); }};
         if (!isFirstTimeSeeing(type)) return true;
 
         return type instanceof Expression ?

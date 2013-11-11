@@ -5,6 +5,7 @@ import automath.inference.PriorityQueueProofStrategy;
 import automath.inference.ProofStrategy;
 import automath.type.Predicate;
 import automath.type.PredicateVariable;
+import automath.util.AutomathLogger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,7 +42,6 @@ public class PriorityQueueProofStrategyTest extends BaseTest {
     }
 
     @Test
-    @Ignore
     public void proofCompletionTest() {
         corpus.addAxiomIfNew(parser.parseTheorem("A&B -> A"));
         corpus.addAxiomIfNew(parser.parseTheorem("A&B -> B"));
@@ -55,10 +55,13 @@ public class PriorityQueueProofStrategyTest extends BaseTest {
         corpus.addAxiomIfNew(assumption1);
         corpus.addAxiomIfNew(assumption2);
 
-        Predicate goal = parser.parsePredicate("(A->B)&(B->C) -> (A->C)");
+        final Predicate goal = parser.parsePredicate("(A->B)&(B->C) -> (A->C)");
 
         prover = new PriorityQueueProofStrategy(goal, corpus);
         assertTrue(prover.execute());
+        new AutomathLogger(){@Override public String fine(){
+            return "\n"+prover.generateProof(goal);
+        }};
     }
 
     @Test

@@ -52,4 +52,9 @@ public class Mappable<T extends Expression> implements Comparable {
             return new ExpressionComparisonProcessor(true).compare(rawObject, (T) otherObject);
         }
     }
+
+    @Override
+    public String toString() {
+        return rawObject.toString();
+    }
 }

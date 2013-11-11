@@ -5,6 +5,7 @@ import automath.type.Predicate;
 import automath.type.Theorem;
 import automath.type.visitor.processor.ExpressionComparisonProcessor;
 import automath.type.visitor.processor.ExpressionSimplificationProcessor;
+import automath.util.AutomathLogger;
 import automath.util.Mappable;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,24 +19,34 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
 
     // Facilitates fast lookup and stores back-tracking to recreate a proof
     private final Map<Mappable, Inference> factToInference = new TreeMap<Mappable, Inference>(Mappable.FULL_COMPARATOR);
+    private final Map<Mappable, Inference> uniqueFactToInference = new TreeMap<Mappable, Inference>(Mappable.NO_ASSUMPTION_COMPARATOR);
 
     @Override
     public boolean addInferenceIfNew(Inference inference) {
-        Predicate result = inference.result;
+        if (inference.theorem == null) {
+            throw new RuntimeException();
+        }
 
         // Convert to theorem if result is a theorem
-        if (result.getChildren().size() == 3
-                && result.getChild(1) == Operator.IMPLIES)
-//                && result.getAssumptions().size() == 0) Why did I have this? Is wrong because theorems mean implications, in other words anything we can apply, which can include assumptions, but the result must include the same assumptions
-            result = new Theorem(result);
+        if (inference.result.getChildren().size() == 3
+                && inference.result.getChild(1) == Operator.IMPLIES)
+            inference.result = new Theorem(inference.result);
 
-        result.setLabel(Integer.toString(size()+1));
+        inference.result.setLabel(Integer.toString(size()+1));
 
-        // TODO: this is also not new if we already knew this result but with fewer assumptions
-        Mappable mappableResult = new Mappable(result);
-        if (factToInference.containsKey(mappableResult)) return false;
-        facts.add(result);
+        Mappable mappableResult = new Mappable(inference.result);
+        if (uniqueFactToInference.containsKey(mappableResult)) {
+            Inference oldInference = uniqueFactToInference.get(mappableResult);
+            if (inference.result.getAssumptions().containsAll(oldInference.result.getAssumptions())) {
+                // If we already knew this result but with the same or fewer assumptions, not new
+                return false;
+            }
+        } else {
+            assert(!factToInference.containsKey(mappableResult));
+        }
+        facts.add(inference.result);
         factToInference.put(mappableResult, inference);
+        uniqueFactToInference.put(mappableResult, inference);
         return true;
     }
 
@@ -116,7 +127,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
             Inference inference = new Inference();
             inference.variableAssignment = antecedent.getVariableAssignmentTo(fact);
             if (null != inference.variableAssignment) {
-                inference.precedents.add(new Mappable<Predicate>(fact));
+                inference.precedents.add(new Mappable(fact));
                 legalInferences.add(inference);
             }
         }
@@ -208,6 +219,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
         SimpleKnowledgeCorpus newCorpus = new SimpleKnowledgeCorpus();
         newCorpus.facts.addAll(this.facts);
         newCorpus.factToInference.putAll(this.factToInference);
+        newCorpus.uniqueFactToInference.putAll(this.uniqueFactToInference);
         return newCorpus;
     }
 

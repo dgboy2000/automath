@@ -81,4 +81,16 @@ public class Theorem extends Predicate {
     public Theorem clone() {
         return new Theorem((Predicate) super.clone());
     }
+
+    /**
+     * Derived theorem flows logically from previous premises.
+     * @return
+     */
+    public boolean isNonDerivedTheorem() {
+        return this.getName() != null && (
+                this.getName().equalsIgnoreCase("AXIOM") ||
+                this.getName().equalsIgnoreCase("REDUCTION") ||
+                this.getName().equalsIgnoreCase("ASSUMPTION")
+        );
+    }
 }

@@ -1,5 +1,7 @@
 package automath.util;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,13 +11,16 @@ import java.util.logging.Logger;
  * -Should generate strings to log if the log-level isn't met
  */
 public class AutomathLogger {
-
-    // assumes the current class is called logger
     private final static Logger LOGGER = Logger.getLogger(AutomathLogger.class.getName());
+    private final static Level LOG_LEVEL = Level.FINE;
+    private final static Handler CONSOLE_HANDLER = new ConsoleHandler();
 
     static {
-        LOGGER.setLevel(Level.FINER);
-        LOGGER.info("AutomathLogger starting up");
+        LOGGER.setLevel(LOG_LEVEL);
+        CONSOLE_HANDLER.setLevel(LOG_LEVEL);
+        LOGGER.addHandler(CONSOLE_HANDLER);
+
+        LOGGER.info("AutomathLogger log level: " + LOGGER.getLevel().toString());
     };
 
     public AutomathLogger() {
@@ -30,46 +35,46 @@ public class AutomathLogger {
         Level logLevel = LOGGER.getLevel();
 
         String logMessage = severe();
-        if (logLevel.equals(Level.SEVERE) || logMessage != null) {
+        if (logMessage != null) {
             LOGGER.severe(logMessage);
             return;
-        }
+        } else if (logLevel.equals(Level.SEVERE)) return;
 
         logMessage = warning();
-        if (logLevel.equals(Level.WARNING) || logMessage != null) {
+        if (logMessage != null) {
             LOGGER.warning(logMessage);
             return;
-        }
+        } else if (logLevel.equals(Level.WARNING)) return;
 
         logMessage = info();
-        if (logLevel.equals(Level.INFO) || logMessage != null) {
+        if (logMessage != null) {
             LOGGER.info(logMessage);
             return;
-        }
+        } else if (logLevel.equals(Level.INFO)) return;
 
         logMessage = config();
-        if (logLevel.equals(Level.CONFIG) || logMessage != null) {
+        if (logMessage != null) {
             LOGGER.config(logMessage);
             return;
-        }
+        } else if (logLevel.equals(Level.CONFIG)) return;
 
         logMessage = fine();
-        if (logLevel.equals(Level.FINE) || logMessage != null) {
+        if (logMessage != null) {
             LOGGER.fine(logMessage);
             return;
-        }
+        } else if (logLevel.equals(Level.FINE)) return;
 
         logMessage = finer();
-        if (logLevel.equals(Level.FINER) || logMessage != null) {
+        if (logMessage != null) {
             LOGGER.finer(logMessage);
             return;
-        }
+        } else if (logLevel.equals(Level.FINER)) return;
 
         logMessage = finest();
-        if (logLevel.equals(Level.FINEST) || logMessage != null) {
+        if (logMessage != null) {
             LOGGER.finest(logMessage);
             return;
-        }
+        } else if (logLevel.equals(Level.FINEST)) return;
     }
 
     /**

@@ -45,7 +45,7 @@ public class Inference {
     public static Inference assumption(Predicate toAssume, Predicate context) {
         Inference inference = Inference.assumption(toAssume);
         inference.result.getAssumptions().addAll(context.getAssumptions());
-        inference.precedents.add(new Mappable<Predicate>(context));
+        inference.precedents.add(new Mappable(context));
 
         return inference;
     }
@@ -53,7 +53,7 @@ public class Inference {
     public static Inference reduction(Predicate toReduce, Predicate assumption) {
         Inference inference = new Inference();
         inference.variableAssignment = new VariableAssignment();
-        inference.result = toReduce.getReductionBy(assumption);
+        inference.result = new Theorem(toReduce.getReductionBy(assumption));
         inference.theorem = Theorem.REDUCTION;
         inference.precedents.add(new Mappable<Predicate>(assumption));
         inference.precedents.add(new Mappable<Predicate>(toReduce));
@@ -64,16 +64,16 @@ public class Inference {
     public String toString() {
         StringBuilder inferenceStringBuilder = new StringBuilder(result.toString());
         inferenceStringBuilder.append(StringUtils.repeat(" ", 40-inferenceStringBuilder.length()))
-                .append(theorem.getName() == null ? "Theorem " + theorem.getLabel() : theorem.getName());
+                .append(theorem.getName() == null ? theorem.toString() : theorem.getName());
 
         if (precedents.size() > 0) {
-            inferenceStringBuilder.append("(");
+            inferenceStringBuilder.append(" applied to (");
             Set<String> precendentLabels = new OrderedHashSet<String>();
             for (Mappable<Predicate> precedent : precedents) {
-                precendentLabels.add(precedent.getRawObject().getLabel());
+                precendentLabels.add(precedent.getRawObject().toString());
             }
             for (Mappable<Predicate> assumption : result.getAssumptions()) {
-                precendentLabels.add(assumption.getRawObject().getLabel());
+                precendentLabels.add(assumption.getRawObject().toString());
             }
             inferenceStringBuilder.append(StringUtils.join(precendentLabels, ","));
             inferenceStringBuilder.append(")");

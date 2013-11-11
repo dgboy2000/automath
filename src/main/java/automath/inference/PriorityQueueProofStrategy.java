@@ -117,7 +117,7 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
             this.add(candidate);
         }
 
-        new AutomathLogger(){@Override public String info() {
+        new AutomathLogger(){@Override public String fine() {
             return "Refresh with existing facts: "+currentKnowledge.size()+
                     "\nCurrent best complexity: "+SymbolCountProcessor.countSymbolsIn(peek().result);
         }};
