@@ -115,14 +115,6 @@ public class Predicate extends Expression {
         return code;
     }
 
-    @Override
-    public int compareTo(Object otherObject) {
-        if (otherObject instanceof Mappable) return -((Mappable) otherObject).compareTo(this);
-        int comparison = super.compareTo(otherObject);
-        if (comparison != 0) return comparison;
-        return this.getAssumptions().size() - ((Predicate) otherObject).getAssumptions().size();
-    }
-
     /**
      * Can this Type be a predicate?
      * @param type

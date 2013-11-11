@@ -17,23 +17,23 @@ public class ExpressionComparisonProcessorTest extends BaseTest {
     public void testParallelExpressions() {
         Predicate cycle1 = generateCyclicAssumptions();
         Predicate cycle2 = generateCyclicAssumptions();
-        assertTrue(ExpressionComparisonProcessor.equal(cycle1, cycle2));
+        assertTrue(new ExpressionComparisonProcessor(true).equal(cycle1, cycle2));
     }
 
     @Test
     public void testAssumptionUniqueness() {
         Predicate derived1 = parser.parsePredicate("x=4");
         Predicate derived2 = parser.parsePredicate("x=4");
-        assertTrue(ExpressionComparisonProcessor.equal(derived1, derived2));
+        assertTrue(new ExpressionComparisonProcessor(true).equal(derived1, derived2));
 
         derived1.addAssumption(generateCyclicAssumptions());
-        assertFalse(ExpressionComparisonProcessor.equal(derived1, derived2));
+        assertFalse(new ExpressionComparisonProcessor(true).equal(derived1, derived2));
 
         derived2.addAssumption(generateCyclicAssumptions());
-        assertTrue(ExpressionComparisonProcessor.equal(derived1, derived2));
+        assertTrue(new ExpressionComparisonProcessor(true).equal(derived1, derived2));
 
         derived2.addAssumption(generateCyclicAssumptions());
-        assertTrue(ExpressionComparisonProcessor.equal(derived1, derived2));
+        assertTrue(new ExpressionComparisonProcessor(true).equal(derived1, derived2));
     }
 
     private Predicate generateCyclicAssumptions() {

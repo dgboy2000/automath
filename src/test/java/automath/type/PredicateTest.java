@@ -49,13 +49,13 @@ public class PredicateTest extends BaseTest {
 
     @Test
     public void equalsTest() {
-        assertTrue(ExpressionComparisonProcessor.equal(equation, equation));
-        assertTrue(ExpressionComparisonProcessor.equal(equation, equationCopy));
-        assertTrue(ExpressionComparisonProcessor.equal(flippedEquation, flippedEquation));
-        assertFalse(ExpressionComparisonProcessor.equal(equation, numberEquation));
-        assertFalse(ExpressionComparisonProcessor.equal(flippedEquation, equation));
-        assertFalse(ExpressionComparisonProcessor.equal(equation, flippedEquation));
-        assertFalse(ExpressionComparisonProcessor.equal(numberEquation, equation));
+        assertTrue(new ExpressionComparisonProcessor(true).equal(equation, equation));
+        assertTrue(new ExpressionComparisonProcessor(true).equal(equation, equationCopy));
+        assertTrue(new ExpressionComparisonProcessor(true).equal(flippedEquation, flippedEquation));
+        assertFalse(new ExpressionComparisonProcessor(true).equal(equation, numberEquation));
+        assertFalse(new ExpressionComparisonProcessor(true).equal(flippedEquation, equation));
+        assertFalse(new ExpressionComparisonProcessor(true).equal(equation, flippedEquation));
+        assertFalse(new ExpressionComparisonProcessor(true).equal(numberEquation, equation));
     }
 
     @Test
@@ -63,6 +63,6 @@ public class PredicateTest extends BaseTest {
         Predicate assumption1 = Inference.assumption(parser.parsePredicate("A")).result;
         Predicate assumption2 = Inference.assumption(parser.parsePredicate("A")).result;
         assertEquals(assumption1.hashCode(), assumption2.hashCode());
-        assertTrue(ExpressionComparisonProcessor.equal(assumption1, assumption2));
+        assertTrue(new ExpressionComparisonProcessor(true).equal(assumption1, assumption2));
     }
 }

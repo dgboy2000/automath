@@ -38,10 +38,10 @@ public class PredicateVariable extends Predicate implements Variable {
                 PredicateVariable otherVariable = (PredicateVariable) otherType;
                 return getName().equals(otherVariable.getName()) &&
                         otherVariable.isBound() &&
-                        ExpressionComparisonProcessor.equal(getBinding(), otherVariable.getBinding());
+                        new ExpressionComparisonProcessor(true).equal(getBinding(), otherVariable.getBinding());
             } else if (otherType instanceof Predicate) {
                 Predicate otherPredicate = (Predicate) otherType;
-                return ExpressionComparisonProcessor.equal(getBinding(), otherPredicate);
+                return new ExpressionComparisonProcessor(true).equal(getBinding(), otherPredicate);
             } else return false;
         } else {
             return otherType instanceof Predicate;

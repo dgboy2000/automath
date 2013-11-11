@@ -41,8 +41,8 @@ public class ExpressionHashProcessorTest extends BaseTest {
         Predicate cycle2 = generateCyclicAssumptions();
         cycle2.getAssumptions().clear();
         cycle2.addAssumption(cycle1);
-        assertFalse(ExpressionComparisonProcessor.equal(cycle1, cycle2));
-        assertFalse(ExpressionComparisonProcessor.equal(cycle2, cycle1));
+        assertFalse(new ExpressionComparisonProcessor(true).equal(cycle1, cycle2));
+        assertFalse(new ExpressionComparisonProcessor(true).equal(cycle2, cycle1));
     }
 
     @Test
@@ -50,8 +50,8 @@ public class ExpressionHashProcessorTest extends BaseTest {
         Predicate cycle1 = generateCyclicAssumptions();
         Predicate cycle2 = generateCyclicAssumptions();
         ((PredicateVariable) cycle2).bindTo(null);
-        assertFalse(ExpressionComparisonProcessor.equal(cycle1, cycle2));
-        assertFalse(ExpressionComparisonProcessor.equal(cycle2, cycle1));
+        assertFalse(new ExpressionComparisonProcessor(true).equal(cycle1, cycle2));
+        assertFalse(new ExpressionComparisonProcessor(true).equal(cycle2, cycle1));
     }
 
     private Predicate generateCyclicAssumptions() {

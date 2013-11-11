@@ -39,6 +39,6 @@ public class VariableAssignmentBindingProcessor implements ExpressionVisitor.Pro
             variableNameToBinding.put(variable.getName(), variable.getBinding());
             return true;
         }
-        return ExpressionComparisonProcessor.equal(variable.getBinding(), variableNameToBinding.get(variable.getName()));
+        return new ExpressionComparisonProcessor(true).equal(variable.getBinding(), variableNameToBinding.get(variable.getName()));
     }
 }

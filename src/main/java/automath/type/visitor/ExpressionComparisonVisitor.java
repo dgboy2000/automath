@@ -38,6 +38,8 @@ public class ExpressionComparisonVisitor extends BaseTypeVisitor {
     }
 
     public interface TypeProcessor {
+        public boolean includeAssumptions();
+
         /*
          * Processes the visited nodes and returns true if equal, false otherwise
          */
@@ -53,7 +55,7 @@ public class ExpressionComparisonVisitor extends BaseTypeVisitor {
     public int visitFromPredicate(Predicate predicate, Type otherType) {
         int comparison = visitFromExpression(predicate, otherType);
         if (comparison != 0) return comparison;
-        return visitAssumptions(predicate, (Predicate) otherType);
+        return processor.includeAssumptions() ? visitAssumptions(predicate, (Predicate) otherType) : 0;
     }
 
     public int visitFromExpression(Expression expression, Type otherType) {

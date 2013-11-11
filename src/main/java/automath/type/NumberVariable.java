@@ -34,7 +34,7 @@ public class NumberVariable extends BaseType implements Variable {
                 NumberVariable otherVariable = (NumberVariable) otherType;
                 return getName().equals(otherVariable.getName()) &&
                         otherVariable.isBound() &&
-                        ExpressionComparisonProcessor.equal(getBinding(), otherVariable.getBinding());
+                        new ExpressionComparisonProcessor(true).equal(getBinding(), otherVariable.getBinding());
             } else {
                 // TODO: want to be able to assign an expression to a number variable
                 return false;

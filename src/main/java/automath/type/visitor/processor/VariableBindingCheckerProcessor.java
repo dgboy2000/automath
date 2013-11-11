@@ -51,7 +51,7 @@ public class VariableBindingCheckerProcessor implements ExpressionVisitor.Proces
                     continue;
                 }
                 if (newBinding == null) continue;
-                if (ExpressionComparisonProcessor.equal(oldBinding, newBinding)) continue;
+                if (new ExpressionComparisonProcessor(true).equal(oldBinding, newBinding)) continue;
 
 //                renameVariableInPredicate(name, curPredicate);
             }
@@ -91,6 +91,6 @@ public class VariableBindingCheckerProcessor implements ExpressionVisitor.Proces
             return true;
         }
 
-        return ExpressionComparisonProcessor.equal(binding, prevBinding);
+        return new ExpressionComparisonProcessor(true).equal(binding, prevBinding);
     }
 }

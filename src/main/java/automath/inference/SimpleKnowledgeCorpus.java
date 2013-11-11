@@ -17,7 +17,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
     private final List<Predicate> facts = new ArrayList<Predicate>(); // Facilitates ordering
 
     // Facilitates fast lookup and stores back-tracking to recreate a proof
-    private final Map<Mappable, Inference> factToInference = new HashMap<Mappable, Inference>();
+    private final Map<Mappable, Inference> factToInference = new TreeMap<Mappable, Inference>(Mappable.FULL_COMPARATOR);
 
     @Override
     public boolean addInferenceIfNew(Inference inference) {
@@ -55,14 +55,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
 
     @Override
     public Inference getInference(Predicate predicate) {
-        // TODO: why is hash lookup failing? is something getting modified after insertion?
-//        return factToInference.get(new MappablePredicate(predicate));
-
-        for (Inference inference : this.factToInference.values()) {
-            if (ExpressionComparisonProcessor.equal(inference.result, predicate)) return inference;
-        }
-
-        return null;
+        return factToInference.get(new Mappable(predicate));
     }
 
     /**

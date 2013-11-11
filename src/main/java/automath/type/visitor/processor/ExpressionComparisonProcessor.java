@@ -12,21 +12,45 @@ import java.util.Set;
  * which means equal up to renaming unbound variables and cloning nodes.
  */
 public class ExpressionComparisonProcessor implements ExpressionComparisonVisitor.TypeProcessor {
-    public static boolean equal(Expression expA, Expression expB) {
+    public final boolean includeAssumptions_;
+
+    public ExpressionComparisonProcessor(boolean includeAssumptions) {
+        this.includeAssumptions_ = includeAssumptions;
+    }
+
+    public boolean equal(Expression expA, Expression expB) {
         return compare(expA, expB) == 0;
     }
 
-    public static int compare(Expression expA, Expression expB) {
-        return new ExpressionComparisonVisitor(new ExpressionComparisonProcessor()).visit(expA, expB);
+    public int compare(Expression expA, Expression expB) {
+        return new ExpressionComparisonVisitor(this).visit(expA, expB);
+    }
+
+    @Override
+    public boolean includeAssumptions() {
+        return includeAssumptions_;
     }
 
     @Override
     public int process(Type type, Type otherType) {
-        if (type instanceof Operator) {
-            Operator operator = (Operator) type;
-            if (otherType instanceof Operator) return operator.compareTo((Operator) otherType);
-            return operator.getClass().getName().compareTo(otherType.getClass().getName());
-        }
+        if (type instanceof Operator) return processOperator((Operator) type, otherType);
+        if (type instanceof Predicate) return processPredicate((Predicate) type, otherType);
         return ((BaseType) type).compareTo(otherType);
+    }
+
+    private int processPredicate(Predicate predicate, Type otherType) {
+        int comparison = predicate.compareTo(otherType);
+        if (comparison != 0) return comparison;
+
+        if (includeAssumptions()) {
+            Predicate otherPredicate = (Predicate) otherType; // BaseType comparison is unequal if different classes
+            return predicate.getAssumptions().size() - otherPredicate.getAssumptions().size();
+        }
+        return 0;
+    }
+
+    private int processOperator(Operator operator, Type otherType) {
+        if (otherType instanceof Operator) return operator.compareTo((Operator) otherType);
+        return operator.getClass().getName().compareTo(otherType.getClass().getName());
     }
 }

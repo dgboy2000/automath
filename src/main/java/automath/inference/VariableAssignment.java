@@ -104,7 +104,7 @@ public class VariableAssignment extends HashMap<Variable, Type> implements Expre
             } else if ((otherTarget instanceof Variable) && otherTarget.isAssignableFrom(thisTarget)) {
                 intersection.put(variable, thisTarget);
             } else if ((thisTarget instanceof Expression) && (otherTarget instanceof Expression) &&
-                    ExpressionComparisonProcessor.equal((Expression) thisTarget, (Expression) otherTarget)) {
+                    new ExpressionComparisonProcessor(true).equal((Expression) thisTarget, (Expression) otherTarget)) {
                 continue;
             } else if (!(thisTarget instanceof Expression) && !(otherTarget instanceof Expression) &&
                     thisTarget.equals(otherTarget)) {
@@ -153,7 +153,7 @@ public class VariableAssignment extends HashMap<Variable, Type> implements Expre
                 } else if (allVarNamesToBindings.get(varName) == null) {
                     // TODO: change previous sightings to new name
                     return null;
-                } else if (ExpressionComparisonProcessor.equal(binding, allVarNamesToBindings.get(varName))) continue;
+                } else if (new ExpressionComparisonProcessor(true).equal(binding, allVarNamesToBindings.get(varName))) continue;
                 else return null;
             }
         }

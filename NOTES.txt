@@ -134,6 +134,7 @@ Need to make ExpressionAndAssumptionVisitor
 
 Want the expression comparitor to accept parameters. Include assumptions or not?
 Can accomplish this by creating public paramter seters on the processor, which call protected setters on the expression, which control what gets visited and processed. The assumption-checks can be moved from nodes to the processor.
+The processor methods become instance methods.
 
 
 
