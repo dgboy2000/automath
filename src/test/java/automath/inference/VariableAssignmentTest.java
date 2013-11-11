@@ -3,9 +3,17 @@ package automath.inference;
 import automath.BaseTest;
 import automath.inference.VariableAssignment;
 import automath.type.*;
+import automath.type.visitor.processor.VariableBindingCheckerProcessor;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -14,6 +22,11 @@ import static org.junit.Assert.*;
  */
 @RunWith(JUnit4.class)
 public class VariableAssignmentTest extends BaseTest {
+    @Before
+    public void init() {
+        corpus = new SimpleKnowledgeCorpus();
+    }
+
     @Test
     public void applyTest() {
         VariableAssignment variableAssignment = new VariableAssignment();
@@ -41,11 +54,14 @@ public class VariableAssignmentTest extends BaseTest {
     public void intersectingNamesTest() {
         // TODO: functionality for post-variable-assignment rewrite of consequent
         // to make sure we don't inadvertently combine variables that should be separate
+        Predicate binding = parser.parsePredicate("a+b=c+d");
 
         Variable aVar = parser.parseVariable("a");
         Variable bVar = parser.parseVariable("b");
         Variable cVar = parser.parseVariable("c");
         Variable dVar = parser.parseVariable("d");
+        bVar.bindTo(binding);
+        dVar.bindTo(binding);
 
         VariableAssignment firstAssignment = new VariableAssignment();
         firstAssignment.put(aVar, bVar);
@@ -99,4 +115,43 @@ public class VariableAssignmentTest extends BaseTest {
 
         assertEquals(2, intersection.size());
     }
+
+    @Test
+    @Ignore
+    public void testOverlappingVariablesInTarget() {
+        Theorem theorem = parser.parseTheorem("A&B -> B&A");
+
+        PredicateVariable bound = (PredicateVariable) parser.parseVariable("D");
+        bound.bindTo(bound);
+        Predicate unbound = parser.parsePredicate("C&D");
+        corpus.addAxiomIfNew(bound);
+        corpus.addAxiomIfNew(unbound);
+
+        boolean foundDifferentTargets = false;
+        List<Inference> inferences = corpus.getLegalInferences(theorem);
+        for (Inference inference : inferences) {
+            Collection<Type> assignmentTargets = inference.variableAssignment.values();
+            if (assignmentTargets.contains(bound) && assignmentTargets.contains(unbound)) {
+                foundDifferentTargets = true;
+                Map<String, Predicate> varNameToBinding = VariableBindingCheckerProcessor.getBindingsIn(inference.result);
+                assertEquals(varNameToBinding.size(), 3); // The unbound 'D' should have been rewritten to another name
+            }
+        }
+        assertTrue(foundDifferentTargets);
+    }
+
+//    @Test
+//    public void conflictingAssignmentTargetsTest() {
+//        Theorem theorem1 = parser.parseTheorem("(A->B)&(B->C)->(A->B)");
+//        Theorem theorem2 = parser.parseTheorem("A&B->A");
+//
+//        corpus.addAxiomIfNew(theorem1);
+//        corpus.addAxiomIfNew(theorem2);
+//        corpus.addInferenceIfNew(Inference.assumption(parser.parsePredicate("B")));
+//
+//        Predicate assumption1 = parser.parsePredicate("(A->B)&(B->C)").asAssumption();
+//        Predicate assumption2 = parser.parsePredicate("A").asAssumption();
+//        assumption2.addAssumption(assumption1);
+//        Predicate result = theorem1.applyTo(assumption1);
+//    }
 }

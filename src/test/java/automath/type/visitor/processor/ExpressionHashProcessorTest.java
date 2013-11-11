@@ -1,11 +1,9 @@
 package automath.type.visitor.processor;
 
 import automath.BaseTest;
-import automath.parser.FirstParser;
 import automath.type.Expression;
 import automath.type.Predicate;
 import automath.type.PredicateVariable;
-import automath.type.visitor.processor.ExpressionHashProcessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -43,8 +41,8 @@ public class ExpressionHashProcessorTest extends BaseTest {
         Predicate cycle2 = generateCyclicAssumptions();
         cycle2.getAssumptions().clear();
         cycle2.addAssumption(cycle1);
-        assertFalse(ExpressionEqualityProcessor.equal(cycle1, cycle2));
-        assertFalse(ExpressionEqualityProcessor.equal(cycle2, cycle1));
+        assertFalse(ExpressionComparisonProcessor.equal(cycle1, cycle2));
+        assertFalse(ExpressionComparisonProcessor.equal(cycle2, cycle1));
     }
 
     @Test
@@ -52,8 +50,8 @@ public class ExpressionHashProcessorTest extends BaseTest {
         Predicate cycle1 = generateCyclicAssumptions();
         Predicate cycle2 = generateCyclicAssumptions();
         ((PredicateVariable) cycle2).bindTo(null);
-        assertFalse(ExpressionEqualityProcessor.equal(cycle1, cycle2));
-        assertFalse(ExpressionEqualityProcessor.equal(cycle2, cycle1));
+        assertFalse(ExpressionComparisonProcessor.equal(cycle1, cycle2));
+        assertFalse(ExpressionComparisonProcessor.equal(cycle2, cycle1));
     }
 
     private Predicate generateCyclicAssumptions() {

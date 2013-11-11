@@ -9,7 +9,7 @@ import java.util.UUID;
  * Time: 12:43 AM
  * To change this template use File | Settings | File Templates.
  */
-public class BaseType implements Type, Cloneable {
+public abstract class BaseType implements Type, Cloneable, Comparable {
     private String id;
     public String getId() { return id; }
     protected void setId(String id) { this.id = id; }
@@ -32,6 +32,10 @@ public class BaseType implements Type, Cloneable {
     @Override
     public String toString() {
         return name;
+    }
+
+    public int compareTo(Object otherObject) {
+        return this.getClass().getName().compareTo(otherObject.getClass().getName());
     }
 
     @Override

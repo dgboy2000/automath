@@ -1,5 +1,8 @@
 package automath.type;
 
+import automath.type.visitor.processor.ExpressionComparisonProcessor;
+import automath.util.Mappable;
+
 /**
  * Represents a higher-order variable
  */
@@ -9,11 +12,8 @@ public class PredicateVariable extends Predicate implements Variable {
     @Override public void bindTo(Predicate predicate) { boundTo = predicate; }
     @Override public boolean isBound() { return boundTo != null; }
 
-    private String name;
-    @Override public String getName() { return name; }
-
     public PredicateVariable(String name) {
-        this.name = name;
+        this.setName(name);
     }
 
     public PredicateVariable(PredicateVariable var) {
@@ -29,6 +29,24 @@ public class PredicateVariable extends Predicate implements Variable {
     @Override
     public boolean isTypeAssignableFrom(Type otherType) {
         return otherType instanceof Predicate;
+    }
+
+    @Override
+    public boolean isAssignableFrom(Type otherType) {
+        if (isBound()) {
+            if (otherType instanceof PredicateVariable) {
+                PredicateVariable otherVariable = (PredicateVariable) otherType;
+                return getName().equals(otherVariable.getName()) &&
+                        otherVariable.isBound() &&
+                        ExpressionComparisonProcessor.equal(getBinding(), otherVariable.getBinding());
+            } else if (otherType instanceof Predicate) {
+                Predicate otherPredicate = (Predicate) otherType;
+                return ExpressionComparisonProcessor.equal(getBinding(), otherPredicate);
+            } else return false;
+        } else {
+            return otherType instanceof Predicate;
+        }
+
     }
 
     @Override
@@ -49,6 +67,17 @@ public class PredicateVariable extends Predicate implements Variable {
     @Override
     public PredicateVariable clone() {
         return new PredicateVariable(this);
+    }
+
+    @Override
+    public int compareTo(Object otherObject) {
+        if (otherObject instanceof Mappable) return -((Mappable) otherObject).compareTo(this);
+        int comparison = super.compareTo(otherObject);
+        if (comparison != 0) return comparison;
+        Variable otherVariable = (Variable) otherObject;
+        if (this.isBound() && !otherVariable.isBound()) return 1;
+        if (!this.isBound() && otherVariable.isBound()) return -1;
+        return 0;
     }
 
     @Override

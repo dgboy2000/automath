@@ -1,6 +1,5 @@
 package automath.type;
 
-import automath.type.visitor.processor.ExpressionEqualityProcessor;
 import automath.type.visitor.processor.ExpressionHashProcessor;
 import automath.type.visitor.ExpressionVisitor;
 import automath.type.visitor.processor.VariableBindingProcessor;
@@ -17,11 +16,10 @@ public class Predicate extends Expression {
     public void setLabel(String value) { this.label = value; }
 
     // TODO: need to implement more stuff to make Mappable navigable?
-    private final Set<Mappable<Predicate>> assumptions = new HashSet<Mappable<Predicate>>();
-    public Set<Mappable<Predicate>> getAssumptions() { return assumptions; }
+    private final NavigableSet<Mappable<Predicate>> assumptions = new TreeSet<Mappable<Predicate>>();
+    public NavigableSet<Mappable<Predicate>> getAssumptions() { return assumptions; }
     public void addAssumption(Predicate assumption) { assumptions.add(new Mappable<Predicate>(assumption)); }
     public void addAssumption(Mappable<Predicate> assumption) { assumptions.add(assumption); }
-    public boolean containsAssumption(Predicate assumption) { return assumptions.contains(assumption); }
 
     public static final Predicate TRUE = new Predicate() {
         @Override
@@ -43,7 +41,6 @@ public class Predicate extends Expression {
 
 
     public Predicate() {}
-
     public Predicate(Type... children) { super(children); }
 
     /*
@@ -93,6 +90,7 @@ public class Predicate extends Expression {
      */
     public Predicate asAssumption() {
         Predicate assumption = (Predicate) this.clone();
+        assumption.getAssumptions().clear(); // An assumption only assumes itself
         assumption.getAssumptions().addAll(this.getAssumptions());
         assumption.addAssumption(new Mappable<Predicate>(assumption));
 
@@ -115,6 +113,14 @@ public class Predicate extends Expression {
         // TODO: include assumptions checks in .equals
 
         return code;
+    }
+
+    @Override
+    public int compareTo(Object otherObject) {
+        if (otherObject instanceof Mappable) return -((Mappable) otherObject).compareTo(this);
+        int comparison = super.compareTo(otherObject);
+        if (comparison != 0) return comparison;
+        return this.getAssumptions().size() - ((Predicate) otherObject).getAssumptions().size();
     }
 
     /**

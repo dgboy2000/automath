@@ -3,7 +3,7 @@ package automath.inference;
 import automath.type.Operator;
 import automath.type.Predicate;
 import automath.type.Theorem;
-import automath.type.visitor.processor.ExpressionEqualityProcessor;
+import automath.type.visitor.processor.ExpressionComparisonProcessor;
 import automath.type.visitor.processor.ExpressionSimplificationProcessor;
 import automath.util.Mappable;
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +59,7 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
 //        return factToInference.get(new MappablePredicate(predicate));
 
         for (Inference inference : this.factToInference.values()) {
-            if (ExpressionEqualityProcessor.equal(inference.result, predicate)) return inference;
+            if (ExpressionComparisonProcessor.equal(inference.result, predicate)) return inference;
         }
 
         return null;
@@ -126,7 +126,6 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
                 inference.precedents.add(new Mappable<Predicate>(fact));
                 legalInferences.add(inference);
             }
-//            new AutomathLogger() {@Override public String fine() {return "Legal inference: ";}};
         }
 
         // Apply the variable assignments if this is the top-level theorem
@@ -156,10 +155,6 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
                 if (jointAssignment.variableAssignment != null) {
                     jointAssignment.precedents.addAll(lhs.precedents);
                     jointAssignment.precedents.addAll(rhs.precedents);
-                    if (theorem.apply(jointAssignment.variableAssignment) == null) {
-                        theorem.apply(jointAssignment.variableAssignment);
-                        throw new RuntimeException();
-                    }
                     legalInferences.add(jointAssignment);
                 }
             }

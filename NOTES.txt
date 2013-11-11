@@ -44,19 +44,29 @@ Assume(1): A,B st A&B
     
     
 Axioms:
-A&B -> A
-A&B -> B
-A&(A->B)->B
+1) A&B -> A
+2) A&B -> B
+3) (A->B)&A->B
 
 Goal: (A->B) & (B->C) -> (A->C)
 
-Assume (A->B) & (B->C) 7,15
+4) Assume (A->B) & (B->C) 7,15
+5) Assume A 1,11
+
+Round 1
 (A->B) 3,11
 (B->C) 3,11
-Assume A 1,11
+
+Round 2
 B 1,11
+
+Round 3
 C 1,11
+
+Round 4
 Reduce: A -> C 3,11
+
+Round 5
 Reduce: (A->B) & (B->C) -> (A->C) 11    
 
 
@@ -94,6 +104,41 @@ May need to create ExpressionAssumptionBindingVisitor and connect it to the Expr
 
 TODO: either make equals independent of the order of assumptions or make assumptions happen in a meaningful order
 TODO: modify the expression equals visitor to put the checks for number of children/assumptions/binding or not in the processor? Might facilitate comparisons
+
+How to order expressions? Assume the following have comparitors:
+-string
+-int
+-lists? sets?
+-Class objects
+Need a definite cascading order of asking individual questions in the tree. Then if the individual quesitons have transitive answers, so too will the larger question.
+Proposed order: depth-first, children->bindings->assumptions, Processor: Type.compareTo: (Class (by name)->num children->num assumptions->is bound)->Visitor(visit children->visit assumptions->visit binding). If we've seen a type in the tree before, compare the visit numbers. Should be able to do equals with return compare==0.
+
+Exception caused by multiple keys in a variable assignment mapping to values which share a variable name, but that variable refers to something different.
+
+What's the right solution
+A->f(A,B)
+B->g(A,B)
+if this is valid, the A's and the B's on the right must be either bound to the same thing, or not bound.
+
+Take a set of expressions, extract a set of all variable names that appear in them, coupled with a list of every instance in memory where that variable appears. String -> List<Variable>. For each List<Variable>, must be possible to bind the variables to the same thing. So, there can be only one unique binding in the set.
+
+crawl one target at a time, map variable assignment key -> (map: variable->binding) or null if target isnt expression or variable
+also need to crawl unassigned vars in consequent
+Bound variables can't change names, so two vars of same name bound to unequal expressions are a game ender.
+keep a set of all legal variable names. Go through each assignment target. If a var in the assignment target needs to change, make the binding change in the target. If the change requires setting to a new variable, grab one from the set. If one isn't available, fail.
+
+Drive this with a test.
+Simple:  A-> A&B (unbound), B -> B(bound). Variable assignment should have the B's bound.
+
+Need to make ExpressionAndAssumptionVisitor
+
+Want the expression comparitor to accept parameters. Include assumptions or not?
+Can accomplish this by creating public paramter seters on the processor, which call protected setters on the expression, which control what gets visited and processed. The assumption-checks can be moved from nodes to the processor.
+
+
+
+
+
 
 
 

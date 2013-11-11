@@ -36,8 +36,12 @@ public class SimpleKnowledgeCorpusTest extends BaseTest {
 
     @Test
     public void conjunctionMatching() {
-        corpus.addAxiomIfNew(parser.parsePredicate("a=b"));
-        corpus.addAxiomIfNew(parser.parsePredicate("b=4"));
+        Predicate def1 = parser.parsePredicate("a=b");
+        Predicate def2 = parser.parsePredicate("b=4");
+        VariableBindingProcessor.bind(def1);
+        VariableBindingProcessor.bind(def2);
+        corpus.addAxiomIfNew(def1);
+        corpus.addAxiomIfNew(def2);
 
         Predicate predicate = parser.parsePredicate("x = y & y = z");
         assertEquals(predicate.toString(), "x=y&y=z");
@@ -62,6 +66,11 @@ public class SimpleKnowledgeCorpusTest extends BaseTest {
 
         assertTrue(corpus.addAxiomIfNew(parser.parsePredicate("x=y -> y=x")));
         assertTrue(corpus.get(corpus.size()-1) instanceof Theorem);
+
+        // TODO: If the fact is already known with a strict subset of assumptions, it is not new
+//        Predicate withAssumption = parser.parsePredicate("b=4");
+//        withAssumption.addAssumption(corpus.get(3));
+//        assertFalse(corpus.addAxiomIfNew(withAssumption));
     }
 
     @Test

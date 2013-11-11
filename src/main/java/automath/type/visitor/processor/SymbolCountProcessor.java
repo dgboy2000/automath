@@ -32,7 +32,7 @@ public class SymbolCountProcessor implements ExpressionVisitor.Processor {
             Predicate predicate = (Predicate) expression;
             int assumptionCount = predicate.getAssumptions().size();
             for (Mappable<Predicate> assumption : predicate.getAssumptions()) {
-                if (ExpressionEqualityProcessor.equal(assumption.getRawObject(), predicate)) assumptionCount += symbolCount; // Avoid infinite recursion
+                if (ExpressionComparisonProcessor.equal(assumption.getRawObject(), predicate)) continue;//assumptionCount += symbolCount; // Avoid infinite recursion
                 else assumptionCount += countSymbolsIn(assumption.getRawObject());
             }
             symbolCount += assumptionCount;

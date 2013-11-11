@@ -2,7 +2,7 @@ package automath.type;
 
 import automath.BaseTest;
 import automath.inference.Inference;
-import automath.type.visitor.processor.ExpressionEqualityProcessor;
+import automath.type.visitor.processor.ExpressionComparisonProcessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,13 +49,13 @@ public class PredicateTest extends BaseTest {
 
     @Test
     public void equalsTest() {
-        assertTrue(ExpressionEqualityProcessor.equal(equation, equation));
-        assertTrue(ExpressionEqualityProcessor.equal(equation, equationCopy));
-        assertTrue(ExpressionEqualityProcessor.equal(flippedEquation, flippedEquation));
-        assertFalse(ExpressionEqualityProcessor.equal(equation, numberEquation));
-        assertFalse(ExpressionEqualityProcessor.equal(flippedEquation, equation));
-        assertFalse(ExpressionEqualityProcessor.equal(equation, flippedEquation));
-        assertFalse(ExpressionEqualityProcessor.equal(numberEquation, equation));
+        assertTrue(ExpressionComparisonProcessor.equal(equation, equation));
+        assertTrue(ExpressionComparisonProcessor.equal(equation, equationCopy));
+        assertTrue(ExpressionComparisonProcessor.equal(flippedEquation, flippedEquation));
+        assertFalse(ExpressionComparisonProcessor.equal(equation, numberEquation));
+        assertFalse(ExpressionComparisonProcessor.equal(flippedEquation, equation));
+        assertFalse(ExpressionComparisonProcessor.equal(equation, flippedEquation));
+        assertFalse(ExpressionComparisonProcessor.equal(numberEquation, equation));
     }
 
     @Test
@@ -63,6 +63,6 @@ public class PredicateTest extends BaseTest {
         Predicate assumption1 = Inference.assumption(parser.parsePredicate("A")).result;
         Predicate assumption2 = Inference.assumption(parser.parsePredicate("A")).result;
         assertEquals(assumption1.hashCode(), assumption2.hashCode());
-        assertTrue(ExpressionEqualityProcessor.equal(assumption1, assumption2));
+        assertTrue(ExpressionComparisonProcessor.equal(assumption1, assumption2));
     }
 }

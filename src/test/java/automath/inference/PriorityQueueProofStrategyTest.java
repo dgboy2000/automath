@@ -41,6 +41,7 @@ public class PriorityQueueProofStrategyTest extends BaseTest {
     }
 
     @Test
+    @Ignore
     public void proofCompletionTest() {
         corpus.addAxiomIfNew(parser.parseTheorem("A&B -> A"));
         corpus.addAxiomIfNew(parser.parseTheorem("A&B -> B"));
@@ -50,7 +51,6 @@ public class PriorityQueueProofStrategyTest extends BaseTest {
         Predicate assumption1 = parser.parsePredicate("(A->B)&(B->C)").asAssumption();
         PredicateVariable assumption2 = (PredicateVariable) parser.parseVariable("A");
         assumption2.bindTo(assumption1);
-        assumption2.addAssumption(assumption1);
         assumption2.addAssumption(assumption2);
         corpus.addAxiomIfNew(assumption1);
         corpus.addAxiomIfNew(assumption2);

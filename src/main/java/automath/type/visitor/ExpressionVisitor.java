@@ -5,7 +5,7 @@ import automath.type.Type;
 import automath.util.AutomathLogger;
 
 /**
- * Visit and process every node in an expression.
+ * Visit and process every child node in an expression.
  */
 public class ExpressionVisitor extends BaseTypeVisitor {
     public interface Processor {

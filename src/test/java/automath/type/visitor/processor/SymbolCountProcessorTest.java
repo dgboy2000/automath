@@ -29,6 +29,6 @@ public class SymbolCountProcessorTest extends BaseTest {
         assertEquals(SymbolCountProcessor.countSymbolsIn(bPred), aCount+bCount+1);
 
         aPred.addAssumption(aPred);
-        assertEquals(SymbolCountProcessor.countSymbolsIn(aPred), 2*aCount + 1);
+        assertEquals(SymbolCountProcessor.countSymbolsIn(aPred), aCount + 1);
     }
 }

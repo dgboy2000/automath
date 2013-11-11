@@ -14,6 +14,7 @@ public interface Variable extends Type, Cloneable {
     public void bindTo(Predicate predicate); // Announce that variable is bound by this predicate
     public boolean isBound(); // Whether variable is bound in it's current context
 
+    public String getId();
     public Class getType(); // Class of objects over which the variable ranges
     public boolean isTypeAssignableFrom(Type otherType);
     public int hashCode();

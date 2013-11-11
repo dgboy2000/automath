@@ -5,7 +5,6 @@ import automath.type.Type;
 import automath.type.Variable;
 import automath.type.visitor.ExpressionAlignmentVisitor;
 import automath.inference.VariableAssignment;
-import automath.type.visitor.ExpressionEqualityVisitor;
 
 /*
  * Processor to see if one expression can become

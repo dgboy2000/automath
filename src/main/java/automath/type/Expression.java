@@ -44,6 +44,14 @@ public class Expression extends BaseType {
     }
 
     @Override
+    public int compareTo(Object otherObject) {
+        if (otherObject instanceof Mappable) return -((Mappable) otherObject).compareTo(this);
+        int comparison = super.compareTo(otherObject);
+        if (comparison != 0) return comparison;
+        return this.getChildren().size() - ((Expression) otherObject).getChildren().size();
+    }
+
+    @Override
     public Expression clone() {
         Expression copy;
         try { copy = getClass().getConstructor().newInstance(); }
