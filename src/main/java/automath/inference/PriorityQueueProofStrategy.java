@@ -56,11 +56,11 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
 
         AntecedentExtractionProcessor processor = new AntecedentExtractionProcessor();
         ExpressionVisitor visitor = new ExpressionVisitor(processor);
-        for (int i=0; i<currentKnowledge.size(); ++i) {
-            Predicate fact = currentKnowledge.get(i);
-            if (fact.isAssumption()) currentAssumptions.add(fact);
-            visitor.visit(fact);
-        }
+//        for (int i=0; i<currentKnowledge.size(); ++i) {
+//            Predicate fact = currentKnowledge.get(i);
+//            if (fact.isAssumption()) currentAssumptions.add(fact);
+//            visitor.visit(fact);
+//        }
         visitor.visit(goal);
 
         for (Mappable<Predicate> antecedent : processor.getAntecedents()) {
@@ -106,7 +106,7 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
             candidateInferences.addAll(currentKnowledge.getLegalInferences(theorem));
         }
         candidateInferences.addAll(currentKnowledge.getLegalInferences(Theorem.REDUCTION));
-//        candidateInferences.addAll(generateCandidateAssumptions());
+        candidateInferences.addAll(generateCandidateAssumptions());
 
         for (Inference candidate : candidateInferences) {
             if (candidate.result.isAssignableFrom(this.goal)) {

@@ -66,7 +66,6 @@ public class PriorityQueueProofStrategyTest extends BaseTest {
     }
 
     @Test
-    @Ignore
     public void testLogicalInference() {
         String test = new StringBuilder("A&B -> A\n")
                 .append("A&B -> B\n")
