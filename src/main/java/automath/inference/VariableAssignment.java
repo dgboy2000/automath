@@ -4,6 +4,7 @@ import automath.type.*;
 import automath.type.visitor.ExpressionAlignmentVisitor;
 import automath.type.visitor.processor.ExpressionComparisonProcessor;
 import automath.type.visitor.processor.VariableAssignmentBindingProcessor;
+import automath.type.visitor.processor.VariableAssignmentProcessor;
 import automath.type.visitor.processor.VariableBindingCheckerProcessor;
 
 import java.util.HashMap;
@@ -76,7 +77,7 @@ public class VariableAssignment extends HashMap<Variable, Type> implements Expre
         return true;
     }
 
-    public VariableAssignment intersect(VariableAssignment variableAssignment) {
+    public VariableAssignment intersectOld(VariableAssignment variableAssignment) {
         VariableAssignment intersection = (VariableAssignment) this.clone();
 
         for (Map.Entry<Variable, Type> variableTypeEntry: variableAssignment.entrySet()) {
@@ -113,6 +114,18 @@ public class VariableAssignment extends HashMap<Variable, Type> implements Expre
                 return null;
             }
         }
+
+        /*
+        va1
+        A => f(A, B)
+        B => g(A, B)
+
+        va2
+        B => h(A, B)
+        C => i(A, B)
+
+        If a variable appears in a target of va1 and va2, say no good for now.
+         */
 
         // handle conflicts between naming of targets
         VariableAssignment rawIntersection = (VariableAssignment) intersection.clone();
@@ -160,10 +173,15 @@ public class VariableAssignment extends HashMap<Variable, Type> implements Expre
         return intersection;
     }
 
-    /**
-     * Modifies the variable assignment to be consistent if possible, and returns true on success/false otherwise
-     * @return
-     */
+    public VariableAssignment intersect(VariableAssignment variableAssignment) {
+        return VariableAssignmentProcessor.intersect(this, variableAssignment);
+    }
+
+
+        /**
+         * Modifies the variable assignment to be consistent if possible, and returns true on success/false otherwise
+         * @return
+         */
     public boolean makeConsistent() {
         VariableAssignmentBindingProcessor processor = new VariableAssignmentBindingProcessor();
         for (Map.Entry<Variable, Type> assignment : this.entrySet()) {
@@ -171,5 +189,9 @@ public class VariableAssignment extends HashMap<Variable, Type> implements Expre
         }
         processor.getVariableNameToBinding();
         return true;
+    }
+
+    public VariableAssignment composedWith(VariableAssignment otherAssignment) {
+        return VariableAssignmentProcessor.compose(this, otherAssignment);
     }
 }

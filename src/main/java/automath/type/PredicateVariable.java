@@ -57,6 +57,7 @@ public class PredicateVariable extends Predicate implements Variable {
 
     @Override
     public boolean equals(Object otherObject) {
+        if (otherObject instanceof Mappable) return otherObject.equals(this);
         if (otherObject == null || !otherObject.getClass().equals(getClass())) return false;
         PredicateVariable otherVariable = (PredicateVariable) otherObject;
         if (getAssumptions().size() != otherVariable.getAssumptions().size()) return false;

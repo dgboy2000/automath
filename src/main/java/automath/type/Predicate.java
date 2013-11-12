@@ -42,6 +42,7 @@ public class Predicate extends Expression {
 
     public Predicate() {}
     public Predicate(Type... children) { super(children); }
+    public Predicate(List<Type> children) { this(children.toArray(new Type[children.size()])); }
 
     /*
      * Does this predicate consist of 2 predicates and the 'AND' operator?
@@ -70,10 +71,15 @@ public class Predicate extends Expression {
      * @return
      */
     public Predicate getReductionBy(Predicate assumptionToReduce) {
+        // TODO: should theorems and predicates be able to equal each other?
+        // Child nodes should not be theorems, only predicates
+        if (assumptionToReduce instanceof Theorem) assumptionToReduce = new Predicate(assumptionToReduce.getChildren());
+        Predicate thisPredicate = (this instanceof Theorem) ? new Predicate(getChildren()) : this;
+
         Predicate reduced = new Predicate(
                 assumptionToReduce.clone(),
                 Operator.IMPLIES,
-                this.clone()
+                thisPredicate.clone()
         );
         reduced.getAssumptions().addAll(this.getAssumptions());
         if (!reduced.getAssumptions().remove(assumptionToReduce))

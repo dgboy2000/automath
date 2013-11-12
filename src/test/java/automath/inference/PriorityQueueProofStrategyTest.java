@@ -43,6 +43,7 @@ public class PriorityQueueProofStrategyTest extends BaseTest {
 
     @Test
     public void proofCompletionTest() {
+        corpus.addAxiomIfNew(parser.parseTheorem("A&B -> A&B"));
         corpus.addAxiomIfNew(parser.parseTheorem("A&B -> A"));
         corpus.addAxiomIfNew(parser.parseTheorem("A&B -> B"));
         corpus.addAxiomIfNew(parser.parseTheorem("(A->B)&A -> B"));
@@ -55,7 +56,7 @@ public class PriorityQueueProofStrategyTest extends BaseTest {
         corpus.addAxiomIfNew(assumption1);
         corpus.addAxiomIfNew(assumption2);
 
-        final Predicate goal = parser.parsePredicate("(A->B)&(B->C) -> (A->C)");
+        final Predicate goal = parser.parseTheorem("(A->B)&(B->C) -> (A->C)");
 
         prover = new PriorityQueueProofStrategy(goal, corpus);
         assertTrue(prover.execute());
@@ -71,7 +72,7 @@ public class PriorityQueueProofStrategyTest extends BaseTest {
                 .append("A&B -> B\n")
                 .append("A&(A->B)->B\n")
                 .toString();
-        Predicate goal = parser.parsePredicate("(A->B) & (B->C) -> (A->C)");
+        Predicate goal = parser.parseTheorem("(A->B) & (B->C) -> (A->C)");
         prover = new PriorityQueueProofStrategy(goal, parser.parseFile(test));
 
         boolean isSuccessful = prover.execute();

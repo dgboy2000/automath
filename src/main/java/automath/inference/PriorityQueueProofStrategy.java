@@ -15,8 +15,8 @@ import java.util.*;
  */
 public class PriorityQueueProofStrategy extends PriorityQueue<Inference> implements ProofStrategy {
     private static final int MAX_CORPUS_SIZE = 200;
-    private static final int RECOMPUTE_INFERENCES_PERIOD = 20;
-    private static final int MAX_PREDICATE_COMPLEXITY = 15;
+    private static final int RECOMPUTE_INFERENCES_PERIOD = 5;
+    private static final int MAX_PREDICATE_COMPLEXITY = 11;
 
     private final Predicate goal; // The result to prove
     private final KnowledgeCorpus currentKnowledge; // The current set of known facts
@@ -26,8 +26,8 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
     public final static Comparator<Inference> SYMBOL_COUNTER = new Comparator<Inference>() {
         @Override
         public int compare(Inference inference, Inference inference2) {
-            return SymbolCountProcessor.countSymbolsIn(inference.result) -
-                    SymbolCountProcessor.countSymbolsIn(inference2.result);
+            return SymbolCountProcessor.countSymbolsIn_static(inference.result) -
+                    SymbolCountProcessor.countSymbolsIn_static(inference2.result);
         }
     };
 
@@ -109,17 +109,21 @@ public class PriorityQueueProofStrategy extends PriorityQueue<Inference> impleme
 //        candidateInferences.addAll(generateCandidateAssumptions());
 
         for (Inference candidate : candidateInferences) {
+            if (candidate.result.isAssignableFrom(this.goal)) {
+                assert(currentKnowledge.addInferenceIfNew(candidate));
+                return true;
+            }
             if (this.seenResults.contains(candidate.result)
-                    || SymbolCountProcessor.countSymbolsIn(candidate.result) > MAX_PREDICATE_COMPLEXITY) {
+                    || SymbolCountProcessor.countSymbolsIn_static(candidate.result) > MAX_PREDICATE_COMPLEXITY) {
                continue;
             }
             this.seenResults.add(new Mappable<Predicate>(candidate.result));
             this.add(candidate);
         }
 
-        new AutomathLogger(){@Override public String fine() {
+        new AutomathLogger(){@Override public String info() {
             return "Refresh with existing facts: "+currentKnowledge.size()+
-                    "\nCurrent best complexity: "+SymbolCountProcessor.countSymbolsIn(peek().result);
+                    "\nCurrent best complexity: "+SymbolCountProcessor.countSymbolsIn_static(peek().result);
         }};
 
         return true;

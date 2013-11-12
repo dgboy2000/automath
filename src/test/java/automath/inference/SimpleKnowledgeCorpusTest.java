@@ -20,38 +20,38 @@ public class SimpleKnowledgeCorpusTest extends BaseTest {
         corpus = new SimpleKnowledgeCorpus();
     }
 
-    @Test
-    public void testAntecedentMatching() {
-        corpus.addAxiomIfNew(parser.parsePredicate("x=y"));
-        Predicate pred = parser.parsePredicate("a=b");
-        Predicate otherPred = parser.parsePredicate("c=c");
+//    @Test
+//    public void testAntecedentMatching() {
+//        corpus.addAxiomIfNew(parser.parsePredicate("x=y"));
+//        Predicate pred = parser.parsePredicate("a=b");
+//        Predicate otherPred = parser.parsePredicate("c=c");
+//
+//        assertEquals(corpus.getAssignmentsOf(pred).size(), 1);
+//        assertEquals(corpus.getAssignmentsOf(otherPred).size(), 0);
+//
+//        Theorem theorem = new Theorem(parser.parsePredicate("a=b -> b=a"));
+//        assertEquals(corpus.getLegalInferences(theorem).size(), 1);
+//        assertEquals(corpus.getLegalInferences(theorem).get(0).result, parser.parsePredicate("y=x"));
+//    }
 
-        assertEquals(corpus.getAssignmentsOf(pred).size(), 1);
-        assertEquals(corpus.getAssignmentsOf(otherPred).size(), 0);
-
-        Theorem theorem = new Theorem(parser.parsePredicate("a=b -> b=a"));
-        assertEquals(corpus.getLegalInferences(theorem).size(), 1);
-        assertEquals(corpus.getLegalInferences(theorem).get(0).result, parser.parsePredicate("y=x"));
-    }
-
-    @Test
-    public void conjunctionMatching() {
-        Predicate def1 = parser.parsePredicate("a=b");
-        Predicate def2 = parser.parsePredicate("b=4");
-        VariableBindingProcessor.bind(def1);
-        VariableBindingProcessor.bind(def2);
-        corpus.addAxiomIfNew(def1);
-        corpus.addAxiomIfNew(def2);
-
-        Predicate predicate = parser.parsePredicate("x = y & y = z");
-        assertEquals(predicate.toString(), "x=y&y=z");
-
-        assertEquals(corpus.getAssignmentsOf(predicate).size(), 1);
-        VariableAssignment assignment = corpus.getAssignmentsOf(predicate).get(0);
-        Theorem transitivity = new Theorem(predicate, parser.parsePredicate("x=z"));
-        Predicate result = transitivity.apply(assignment);
-        assertEquals(result, parser.parsePredicate("a = 4"));
-    }
+//    @Test
+//    public void conjunctionMatching() {
+//        Predicate def1 = parser.parsePredicate("a=b");
+//        Predicate def2 = parser.parsePredicate("b=4");
+//        VariableBindingProcessor.bind(def1);
+//        VariableBindingProcessor.bind(def2);
+//        corpus.addAxiomIfNew(def1);
+//        corpus.addAxiomIfNew(def2);
+//
+//        Predicate predicate = parser.parsePredicate("x = y & y = z");
+//        assertEquals(predicate.toString(), "x=y&y=z");
+//
+//        assertEquals(corpus.getAssignmentsOf(predicate).size(), 1);
+//        VariableAssignment assignment = corpus.getAssignmentsOf(predicate).get(0);
+//        Theorem transitivity = new Theorem(predicate, parser.parsePredicate("x=z"));
+//        Predicate result = transitivity.apply(assignment);
+//        assertEquals(result, parser.parsePredicate("a = 4"));
+//    }
 
     @Test
     public void newTest() {

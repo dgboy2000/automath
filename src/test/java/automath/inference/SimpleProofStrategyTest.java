@@ -41,10 +41,10 @@ public class SimpleProofStrategyTest extends BaseTest {
     public void simpleProofTest() {
         Predicate goal = parser.parsePredicate("3+1=2+2");
         KnowledgeCorpus axioms = new SimpleKnowledgeCorpus();
-        axioms.addAxiomIfNew(parser.parsePredicate("3+1=4"));
-        axioms.addAxiomIfNew(parser.parsePredicate("2+2=4"));
-        axioms.addAxiomIfNew(parser.parsePredicate("f=g & g=h -> f=h"));
-        axioms.addAxiomIfNew(parser.parsePredicate("f=g -> g=f"));
+        assertTrue(axioms.addAxiomIfNew(parser.parsePredicate("3+1=4")));
+        assertTrue(axioms.addAxiomIfNew(parser.parsePredicate("2+2=4")));
+        assertTrue(axioms.addAxiomIfNew(parser.parsePredicate("f=g & g=h -> f=h")));
+        assertTrue(axioms.addAxiomIfNew(parser.parsePredicate("f=g -> g=f")));
         ProofStrategy prover = new SimpleProofStrategy(goal, axioms);
 
         assertTrue(prover.execute());

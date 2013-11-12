@@ -4,16 +4,14 @@ import automath.BaseTest;
 import automath.inference.VariableAssignment;
 import automath.type.*;
 import automath.type.visitor.processor.VariableBindingCheckerProcessor;
+import automath.util.Mappable;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -55,6 +53,7 @@ public class VariableAssignmentTest extends BaseTest {
         // TODO: functionality for post-variable-assignment rewrite of consequent
         // to make sure we don't inadvertently combine variables that should be separate
         Predicate binding = parser.parsePredicate("a+b=c+d");
+        binding.setLabel("1");
 
         Variable aVar = parser.parseVariable("a");
         Variable bVar = parser.parseVariable("b");
@@ -117,7 +116,6 @@ public class VariableAssignmentTest extends BaseTest {
     }
 
     @Test
-    @Ignore
     public void testOverlappingVariablesInTarget() {
         Theorem theorem = parser.parseTheorem("A&B -> B&A");
 
@@ -140,18 +138,35 @@ public class VariableAssignmentTest extends BaseTest {
         assertTrue(foundDifferentTargets);
     }
 
-//    @Test
-//    public void conflictingAssignmentTargetsTest() {
-//        Theorem theorem1 = parser.parseTheorem("(A->B)&(B->C)->(A->B)");
-//        Theorem theorem2 = parser.parseTheorem("A&B->A");
-//
-//        corpus.addAxiomIfNew(theorem1);
-//        corpus.addAxiomIfNew(theorem2);
-//        corpus.addInferenceIfNew(Inference.assumption(parser.parsePredicate("B")));
-//
-//        Predicate assumption1 = parser.parsePredicate("(A->B)&(B->C)").asAssumption();
-//        Predicate assumption2 = parser.parsePredicate("A").asAssumption();
-//        assumption2.addAssumption(assumption1);
-//        Predicate result = theorem1.applyTo(assumption1);
-//    }
+    @Test
+    public void testBug1() {
+        Predicate precedent1 = parser.parsePredicate("A&B -> A");
+        Predicate precedent2 = parser.parsePredicate("(A->B)&(B->C) -> (A->B)&(B->C)");
+        Theorem theorem = parser.parseTheorem("(A->B)&(B->C) -> (A->B)");
+        corpus.addAxiomIfNew(precedent1);
+        corpus.addAxiomIfNew(precedent2);
+        List<Inference> inferences = corpus.getLegalInferences(theorem);
+
+        Predicate invalidResult = parser.parsePredicate("A&B -> ((A->B)&(B->C))");
+        List<Mappable<Predicate>> results = new ArrayList<Mappable<Predicate>>();
+        for (Inference inference : inferences) {
+            results.add(new Mappable(inference.result));
+            System.out.println(inference.toString());
+        }
+        assertFalse(results.contains(invalidResult));
+    }
+
+    @Test
+    public void conflictingBindingsTest() {
+        Predicate precedent1 = parser.parsePredicate("A|B").asAssumption();
+        Predicate precedent2 = parser.parsePredicate("B->C").asAssumption();
+        corpus.addAxiomIfNew(precedent1);
+        corpus.addAxiomIfNew(precedent2);
+
+        Theorem theorem = parser.parseTheorem("(A|B)&(B->C) -> (~A->C)");
+
+        // There should be no legal inferences since the bindings of A and B conflict
+        List<Inference> inferences = corpus.getLegalInferences(theorem);
+        assertEquals(inferences.size(), 0);
+    }
 }

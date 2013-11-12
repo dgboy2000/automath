@@ -137,6 +137,33 @@ Can accomplish this by creating public paramter seters on the processor, which c
 The processor methods become instance methods.
 
 
+precedents: A&B -> A, (A->B)&(B->C) -> (A->B)&(B->C) (true)
+theorem: (A->B)&(B->C) -> (A->B) (true)
+result: A&B -> ((A->B)&(B->C)) (False)
+
+VariableAssignment:
+A: A&B
+B: (A->B)&(B->C)
+C: (A->B)&(B->C)
+
+
+Need to figure out Variable Assignments and intersections. Intersections happen when using compound theorems. One option: forget compound theorems and add A&B->A&B axiom? Can't because that axiom won't match anything.
+
+f(A,B) & g(A,B) -> h(A,B)
+
+procedure:
+Find va1: A,B -> va1(A), va1(B) such that f(va1(A), va1(B)) is known
+Find va2: A,B -> va2(A), va2(B) such that g(va2(A), va2(B)) is known
+
+need to unify va1,va2 ==> va so that f(va(A), va(B)) and g(va(A), va(B)) are both known, so that h(va(A), va(B)) will then be inferred.
+
+A: va1(A), va2(A): va(A) consistent with both f and g
+B: va1(B), va2(B): va(B) consistent with both
+
+what are the types of va1, va2? Variables are the only types that can be reassigned.
+Types: type, operator, basetype, number, numvar, expression, predicate, predvar, theorem
+operator, basetype, number cannot be assigned from something not exactly equal
+
 
 
 

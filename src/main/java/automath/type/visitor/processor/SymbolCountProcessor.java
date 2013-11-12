@@ -11,8 +11,16 @@ import automath.util.Mappable;
  * Count the number of terminal symbols in an expression
  */
 public class SymbolCountProcessor implements ExpressionVisitor.Processor {
+    private final boolean includeAssumptions;
+
     private int symbolCount = 0;
     public int getSymbolCount() { return symbolCount; }
+    public void resetSymbolCount() { this.symbolCount = 0; }
+
+    public SymbolCountProcessor() { this.includeAssumptions = false; }
+    public SymbolCountProcessor(boolean includeAssumptions) {
+        this.includeAssumptions = includeAssumptions;
+    }
 
     @Override
     public boolean process(Type type) {
@@ -21,14 +29,19 @@ public class SymbolCountProcessor implements ExpressionVisitor.Processor {
         return true;
     }
 
-    public static int countSymbolsIn(Expression expression) {
+    public static int countSymbolsIn_static(Expression expression) {
+        return new SymbolCountProcessor().countSymbolsIn(expression);
+    }
+
+    public int countSymbolsIn(Expression expression) {
+        resetSymbolCount();
+        new ExpressionVisitor(this).visit(expression);
+
         int symbolCount = 0;
-        SymbolCountProcessor processor = new SymbolCountProcessor();
-        new ExpressionVisitor(processor).visit(expression);
-        symbolCount += processor.getSymbolCount();
+        symbolCount += this.getSymbolCount();
 
         // TODO: move this logic to a new visitor, ExpressionAndAssumptionVisitor
-        if (expression instanceof Predicate) {
+        if (this.includeAssumptions && (expression instanceof Predicate)) {
             Predicate predicate = (Predicate) expression;
             int assumptionCount = predicate.getAssumptions().size();
             for (Mappable<Predicate> assumption : predicate.getAssumptions()) {

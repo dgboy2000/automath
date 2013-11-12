@@ -29,4 +29,11 @@ public class NaturalNumber extends BaseType {
         return (otherObject instanceof NaturalNumber) &&
                 this.getName().equals(((NaturalNumber) otherObject).getName());
     }
+
+    @Override
+    public int compareTo(Object otherObject) {
+        int comparison = super.compareTo(otherObject);
+        if (comparison != 0) return comparison;
+        return this.getName().compareTo(((NaturalNumber) otherObject).getName());
+    }
 }

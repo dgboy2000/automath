@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface KnowledgeCorpus extends Cloneable {
     // TODO: remove this method if nobody needs to use it
-    public List<VariableAssignment> getAssignmentsOf(Predicate predicate); // Find all predicates which are an instance of the specified rule
+//    public List<VariableAssignment> getAssignmentsOf(Predicate predicate); // Find all predicates which are an instance of the specified rule
     public List<Inference> getLegalInferences(Theorem theorem); // Find all inferences that can be made with this theorem
 
     public boolean addAxiomIfNew(Predicate axiom); // Add to corpus if previously unknown, and return whether added

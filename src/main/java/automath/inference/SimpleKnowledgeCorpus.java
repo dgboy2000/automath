@@ -85,28 +85,28 @@ public class SimpleKnowledgeCorpus implements KnowledgeCorpus {
     @Override
     public int size() { return facts.size(); }
 
-    @Override
-    public List<VariableAssignment> getAssignmentsOf(Predicate predicate) {
-        if (predicate.isCompoundPredicate()) {
-            List<VariableAssignment> jointAssignments = new ArrayList<VariableAssignment>();
-            List<VariableAssignment> lhsAssignments = getAssignmentsOf(predicate.getLhs());
-            List<VariableAssignment> rhsAssignments = getAssignmentsOf(predicate.getRhs());
-            for (VariableAssignment lhs : lhsAssignments) {
-                for (VariableAssignment rhs : rhsAssignments) {
-                    VariableAssignment jointAssignment = lhs.intersect(rhs);
-                    if (null != jointAssignment) jointAssignments.add(jointAssignment);
-                }
-            }
-            return jointAssignments;
-        }
-
-        List<VariableAssignment> matchingAssignments = new ArrayList<VariableAssignment>();
-        for (Predicate fact : facts) {
-            VariableAssignment assignment = predicate.getVariableAssignmentTo(fact);
-            if (null != assignment) matchingAssignments.add(assignment);
-        }
-        return matchingAssignments;
-    }
+//    @Override
+//    public List<VariableAssignment> getAssignmentsOf(Predicate predicate) {
+//        if (predicate.isCompoundPredicate()) {
+//            List<VariableAssignment> jointAssignments = new ArrayList<VariableAssignment>();
+//            List<VariableAssignment> lhsAssignments = getAssignmentsOf(predicate.getLhs());
+//            List<VariableAssignment> rhsAssignments = getAssignmentsOf(predicate.getRhs());
+//            for (VariableAssignment lhs : lhsAssignments) {
+//                for (VariableAssignment rhs : rhsAssignments) {
+//                    VariableAssignment jointAssignment = lhs.intersect(rhs);
+//                    if (null != jointAssignment) jointAssignments.add(jointAssignment);
+//                }
+//            }
+//            return jointAssignments;
+//        }
+//
+//        List<VariableAssignment> matchingAssignments = new ArrayList<VariableAssignment>();
+//        for (Predicate fact : facts) {
+//            VariableAssignment assignment = predicate.getVariableAssignmentTo(fact);
+//            if (null != assignment) matchingAssignments.add(assignment);
+//        }
+//        return matchingAssignments;
+//    }
 
     @Override
     public List<Inference> getLegalInferences(Theorem theorem) {
